@@ -1,0 +1,104 @@
+$white: #f8f8f8;
+$black: #000000;
+$blue: #379DE1;
+$yellow: #FCFF2E;
+$confirmed: #7EED94;
+$warning: #EE8181;
+$lightblue: lighten($blue, 30%);
+$grey: lighten($black, 90%);
+
+// mixins
+@mixin borderRadius() {
+  border-radius: 15px;
+}
+
+// reset
+*:not(i) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+// global styles
+body {
+  background-color: $white;
+  height: 100vh;
+  width: 100vw;
+}
+
+.button {
+  display: block;
+  @include borderRadius();
+  padding: 2% 3%;
+  background-color: $blue;
+  color: $white;
+  transition: background-color .2s ease-in;
+  font-size: 12pt;
+  text-decoration: none;
+
+  &:hover {
+    background-color: $lightblue;
+    cursor: pointer;
+  }
+  
+  &--delete {
+    background-color: darken($warning, 20%);
+    
+    &:hover {
+      background-color: $warning;
+    }
+  }
+}
+
+.breadcrumb {
+  text-decoration: none;
+  color: $black;
+  transition: color .2s;
+  
+  &:hover {
+    color:$lightblue;
+  }
+}
+
+input[type="text"] {
+  background-color: $grey;
+  padding: 1% 2%;
+  
+  &:hover {
+    cursor: text;
+  }
+  
+  &:disabled {
+    background-color: transparent;
+    
+    &:hover {
+      cursor: default;
+    }
+  }
+}
+
+// font styling without breaking the heading flow
+.h1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.h2 {
+  font-size: 1.17em;
+  font-weight: bold;
+}
+
+// universal styles
+.float {
+  float: left;
+  margin: 0 2%;
+  padding: 0 1%;
+}

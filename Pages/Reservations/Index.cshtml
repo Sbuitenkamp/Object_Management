@@ -1,0 +1,55 @@
+@page
+@using Object_management.Models
+@model Object_management.Pages.Reservations.Index
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="nl">
+<partial name="_HeadPartial"/>
+<body>
+<partial name="_MenuPartial"/>
+<div class="content">
+    <h1>Reserveringen</h1>
+    <h1 class="warning">@ViewData["warning"]</h1>
+        <h1 class="confirmation">@ViewData["confirmation"]</h1>
+        <h1 class="content__title">Fietsen</h1>
+            @if (Model.Reservations.Count != 0 ) {
+                <table class="content__table">
+                    <thead class="content__table__head">
+                    <tr class="content__table__head__row">
+                        <td class="content__table__head__row__element">Fietsnummer</td>
+                        <td class="content__table__head__row__element">Fietssoort</td>
+                        <td class="content__table__head__row__element">Prijs</td>
+                        <td class="content__table__head__row__element">Verhuurd</td>
+                        <td class="content__table__head__row__element">In onderhoud</td>
+                        <td class="content__table__head__row__element">Aanbiedingen</td>
+                    </tr>
+                    </thead>
+                    <tbody class="content__table__body">
+                    <input type="hidden" name="type" value="Object">
+                    @foreach (Reservation reservation in Model.Reservations) {
+                        <form method="post" id="@reservation.reservation_number"></form>
+                        <tr class="content__table__body">
+                            <td class="content__table__body__element">
+                                <input disabled="disabled" type="text" name="object_number" form="@reservation.reservation_number" value="@reservation.object_number">
+                            </td>
+                            <td class="content__table__body__element">
+                                <input disabled="disabled" type="text" name="object_type" form="">
+                            </td>
+                            <td class="content__table__body__element">
+                                &euro;<input disabled="disabled" type="text" name="price" form="@reservation.reservation_number" value="@($"{reservation.price:0.00}")">
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                <button onclick="onClickUpdate('edit', 'Object', false);" name="updateObjects" class="content__update-button button">Gegevens aanpassen</button>
+            } else {
+                <h1>Geen data gevonden</h1>
+            }
+</div>
+</body>
+</html>
