@@ -1,0 +1,19 @@
+.button {
+  &.sort-button {
+    float: right;
+    padding: 1% 2%;
+    margin: 1% 0;
+  }
+}
+
+.content {
+  &__title {
+    width: 80%;
+  }
+
+  &__add-obj-button {
+    padding: 1% 2%;
+    margin: 1% 0;
+    float: right;
+  }
+}

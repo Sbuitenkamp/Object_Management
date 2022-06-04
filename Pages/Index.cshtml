@@ -1,4 +1,6 @@
 @page
+@using Object_management.Entity
+@using Object_management.Models
 @model Object_management.Pages.Index
 
 @{
@@ -6,11 +8,148 @@
 }
 <!DOCTYPE html>
 <html lang="nl">
+<link rel="stylesheet" href="/css/index.css">
 <partial name="_HeadPartial"/>
 <body class="preload">
 <partial name="_MenuPartial"/>
 <div class="content">
-    <h1>Index</h1>
+    @if (Model.CurrentTime > 16) {
+        <h1 class="">Goedenavond Wytske.</h1>
+    } else if (Model.CurrentTime > 11) {
+        <h1 class="">Goedenmiddag Wytske.</h1>
+    } else {
+        <h1 class="">Goedenmorgen Wytske.</h1>
+    }
+    <div class="content__due-reservations">
+        <div class="content__due-reservations__return">
+            <h2 class="content__due-reservations__return__heading">Fietsen die vandaag teruggebracht moeten worden.</h2>
+            @if (Model.ObjectsToReturn.Count != 0) {
+                <table class="content_due-reservations__return__table">
+                    <thead class="content_due-reservations__return__table__head">
+                    <tr>
+                        <th>Klantnaam</th>
+                        <th>Reserveringsnummer</th>
+                        <th>Uitgeleende fietsen</th>
+                    </tr>
+                    </thead>
+                    <tbody class="content_due-reservations__return__table__body">
+                        @foreach (Reservation returnReservation in Model.ObjectsToReturn) {
+                            <tr>
+                                <td>@returnReservation.CustomerData.name</td>
+                                <td>@returnReservation.reservation_number</td>
+                                <td>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Fietsnummer</th>
+                                            <th>Fietssoort</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (ObjectData objectData in returnReservation.Objects.OrderBy(x => x.Type.description)) {
+                                                <tr>
+                                                    <td>@objectData.object_number</td>
+                                                    <td>@objectData.Type.description</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            } else {
+                <h3 class="content__due-reservations__return__body">Er zijn geen fietsen die terugkomen vandaag.</h3>
+            }
+        </div>
+        <div class="content__due-reservations__give-out">
+            <h2 class="content__due-reservations__give-out__heading">Fietsen die vandaag uitgeleend moeten worden.</h2>
+            @if (Model.ObjectsToGiveOut.Count != 0) {
+                <table class="content_due-reservations__give-out__table">
+                    <thead class="content_due-reservations__return__table__head">
+                    <tr>
+                        <th>Klantnaam</th>
+                        <th>Reserveringsnummer</th>
+                        <th>Uitgeleende fietsen</th>
+                    </tr>
+                    </thead>
+                    <tbody class="content_due-reservations__return__table__body">
+                        @foreach (Reservation returnReservation in Model.ObjectsToGiveOut) {
+                            <tr>
+                                <td>@returnReservation.CustomerData.name</td>
+                                <td>@returnReservation.reservation_number</td>
+                                <td>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>Fietsnummer</th>
+                                            <th>Fietssoort</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (ObjectData objectData in returnReservation.Objects.OrderBy(x => x.Type.description)) {
+                                                <tr>
+                                                    <td>@objectData.object_number</td>
+                                                    <td>@objectData.Type.description</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            } else {
+                <h3 class="content__due-reservations__give-out__body">Er zijn geen fietsen die uitgeleend worden vandaag.</h3>
+            }
+        </div>
+    </div>
+    <div class="availability">
+        <div class="week-picker">
+            <h2 class="availability__heading">Beschikbaarheid van de week</h2>
+            <button class="button button--date" onclick="addWeek(true)"><i class="fa-solid fa-angle-left"></i></button>
+            <form method="post">
+                <input disabled type="date" value="@((Model.SelectedDate ?? DateTime.Today).ToString("yyyy-MM-dd"))" asp-for="SelectedDate">
+            </form>
+            <button class="button button--date" onclick="addWeek(false)"><i class="fa-solid fa-angle-right"></i></button>
+            <button class="button button--date" onclick="changeDate()"><i class="fa-solid fa-check"></i></button>
+            <a class="button button--date" href="/index"><i class="fa-solid fa-repeat"></i></a>
+        </div>
+        @if (Model.AvailableObjects.Count != 0) {
+            <table>
+                <thead>
+                <tr>
+                    <th>Fietssoort</th>
+                    <th>Maandag</th>
+                    <th>Dinsdag</th>
+                    <th>Woensdag</th>
+                    <th>Donderdag</th>
+                    <th>Vrijdag</th>
+                    <th>Zaterdag</th>
+                    <th>Zondag</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (ObjectAvailability availability in Model.AvailableObjects) {
+                    <tr>
+                        <td>@availability.AvailableObjectType.description</td>
+                        <td>@availability.MondayAvailable</td>
+                        <td>@availability.TuesdayAvailable</td>
+                        <td>@availability.WednesdayAvailable</td>
+                        <td>@availability.ThursdayAvailable</td>
+                        <td>@availability.FridayAvailable</td>
+                        <td>@availability.SaturdayAvailable</td>
+                        <td>@availability.SundayAvailable</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        } else {
+            <h1>Kon de data over de beschikbaarheid van fietsen niet vinden.</h1>
+        }
+    </div>
 </div>
 </body>
 </html>

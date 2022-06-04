@@ -1,0 +1,86 @@
+@page
+@using Object_management.Entity
+@model Object_management.Pages.Customers.Index
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="nl">
+<partial name="_HeadPartial"/>
+<link rel="stylesheet" href="/css/customers.css">
+<body>
+<partial name="_MenuPartial"/>
+<div class="content">
+    <h1 class="content__title">Klanten</h1>
+    @if (Model.Customers.Count != 0) {
+        <table class="content__table">
+            <thead class="content__table__head">
+            <tr class="content__table__head__row">
+                <th class="content__table__head__row__element">
+                    @if (Model.Sort == "name" && !Model.SortDesc) {
+                        <a class="sort-button" href="?sort=name&desc=true">Naam <i class="fa-solid fa-sort-down"></i></a>
+                    } else {
+                        <a class="sort-button" href="?sort=name">Naam <i class="fa-solid @(Model.Sort == "name" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                    }
+                </th>
+                <th class="content__table__head__row__element">
+                    @if (Model.Sort == "telephone" && !Model.SortDesc) {
+                        <a class="sort-button" href="?sort=telephone&desc=true">Telefoon <i class="fa-solid fa-sort-down"></i></a>
+                    } else {
+                        <a class="sort-button" href="?sort=telephone">Telefoon <i class="fa-solid @(Model.Sort == "telephone" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                    }
+                </th>
+                <th class="content__table__head__row__element">
+                    @if (Model.Sort == "email" && !Model.SortDesc) {
+                        <a class="sort-button" href="?sort=email&desc=true">E-mail <i class="fa-solid fa-sort-down"></i></a>
+                    } else {
+                        <a class="sort-button" href="?sort=email">E-mail <i class="fa-solid @(Model.Sort == "email" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                    }
+                </th>
+                <th class="content__table__head__row__element">
+                    @if (Model.Sort == "adres" && !Model.SortDesc) {
+                        <a class="sort-button" href="?sort=adres&desc=true">Adres <i class="fa-solid fa-sort-down"></i></a>
+                    } else {
+                        <a class="sort-button" href="?sort=adres">Adres <i class="fa-solid @(Model.Sort == "adres" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                    }
+                </th>
+                <th class="content__table__head__row__element">
+                    <a class="sort-button button" href="/customers">Filter leegmaken</a>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="content__table__body">
+            <input type="hidden" name="type" value="Object">
+            @foreach (Customer customer in Model.Customers) {
+                <form method="post" id="@customer.id"></form>
+                <p class="indicator"></p>
+                <tr class="content__table__body__row">
+                    <td class="content__table__body__row__element">
+                        <input type="text" name="name" form="@customer.id" value="@customer.name">
+                    </td>
+                    <td class="content__table__body__row__element">
+                        <input type="text" name="telephone" form="@customer.id" value="@customer.telephone">
+                    </td>
+                    <td class="content__table__body__row__element">
+                        <input type="text" name="email" form="@customer.id" value="@customer.email">
+                    </td>
+                    <td class="content__table__body__row__element">
+                        <input type="text" name="adres" form="@customer.id" value="@customer.adres">
+                    </td>
+                    <td class="content__table__body__row__element">
+                        <button onclick="deleteCustomer(@customer.id, '@customer.name')" class="content__table__body__row__element button button--delete"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        </table>
+        <button onclick="onClickUpdate('edit', 'Customer', false);" name="updateCustomers" class="content__update-button button">Gegevens aanpassen</button>
+    } else {
+        <h1 class="float">Geen klanten gevonden.</h1>
+    }
+    <a href="/customers/add" class="content__add-obj-button button"><i class="fa-solid fa-plus"></i> Klant toevoegen</a>
+</div>
+</body>
+</html>

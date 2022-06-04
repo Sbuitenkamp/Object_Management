@@ -1,0 +1,102 @@
+@page
+@using Object_management.Entity
+@using System.Globalization
+@model Object_management.Pages.Reservations.Add
+
+@{
+    Layout = null;
+    ViewBag.Title = "Reservering Maken";
+}
+
+<!DOCTYPE html>
+
+<html>
+<partial name="_HeadPartial"/>
+<link rel="stylesheet" href="/css/reservations.css">
+<body>
+<partial name="_MenuPartial"/>
+<a href="/reservations" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug naar reserveringsoverzicht</a>
+<div class="content">
+    <div class="form">
+        <h1 class="warning">@ViewData["warning"]</h1>
+        <h1 class="confirmation">@ViewData["confirmation"]</h1>
+        <h1>Reservering maken</h1>
+        <form class="content__form" method="post">
+            <div class="content__form__row">
+                <label class="content__form__row__label" for="CustomerId">Klant</label>
+                <select asp-for="CustomerId" id="" class="content__form__row__input">
+                    @foreach (Customer customer in Model.Customers) {
+                        @if (Model.NewCustomerId != null && customer.id == Model.NewCustomerId) {
+                            <option value="@customer.id" selected>@customer.name</option>
+                        } else {
+                            <option value="@customer.id">@customer.name</option>
+                        }
+                    }
+                </select>
+                <span style="margin: 0 2%">of</span>
+                <a href="/customers/add?returnPage=reservations/add" class="content__add-obj-button button"><i class="fa-solid fa-plus"></i> Klant toevoegen</a>
+            </div>
+            <div class="content__form__row">
+                <label for="Residence" class="content__form__row__label">Verblijf:</label>
+                <input type="text" asp-for="Residence">
+            </div>
+            @for (int i = 0; i < Model.ObjectTypes.Count; i++) {
+                <div class="content__form__row">
+                    <label class="content__form__row__label" for="ObjectTypeIds">Aantal @Model.ObjectTypes[i].description:</label>
+                    <input type="number" hidden value="@Model.ObjectTypes[i].id" name="ObjectTypeAmounts[@i].object_type_id">
+                    <input value="0" class="content__form__row__input" type="number" name="ObjectTypeAmounts[@i].amount">
+                </div>
+            }
+            <div class="content__form__row">
+                <label for="StartDate" class="content__form__row__label">Verhuurd vanaf:</label>
+                <input type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" asp-for="StartDate">
+                <label for="EndDate" class="content__form__row__label">tot: </label>
+                <input type="date" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" asp-for="ReturnDate">
+            </div>
+            <div class="content__form__row">
+                <label for="PaymentMethod" class="content__form__row__label">Betaalmethode:</label>
+                <input type="text" asp-for="PaymentMethod">
+            </div>
+            <div class="content__form__row">
+                <label for="Comment" class="content__form__row__label">Opmerking(en):</label>
+                <textarea asp-for="Comment" id="" cols="30" rows="10"></textarea>
+            </div>
+            <button type="submit" class="content__form__button button">Toevoegen</button>
+        </form>
+    </div>
+    @if (Model.NewReservation != null) {
+        <div class="result">
+            <h1 class="result__title">Nieuwe reservering</h1>
+            <p class="result__text">Klant: @Model.NewReservation.CustomerData.name</p>
+            <p class="result__text">Verblijft in: @Model.NewReservation.residence</p>
+            <p class="result__text">Verhuurd vanaf: @Model.NewReservation.start_date.ToString("dd MMMM yyyy") tot: @Model.NewReservation.return_date.ToString("dd MMMM yyyy")</p>
+            <p class="result__text">Gereserveerde fietsen</p>
+            <table class="result__table">
+                <thead class="result__table__head">
+                <tr>
+                    <th>Fietsssoort</th>
+                    <th>Aantal</th>
+                    <th>Totale prijs</th>
+                    <th>Toegepaste korting</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (ObjectData objectData in Model.NewReservation.Objects) {
+                    <tr>
+                        <td>@objectData.Type.description</td>
+                        <td>@Model.NewReservation.ObjectAmounts.First(x => x.object_type_id == objectData.Type.id).amount</td>
+                        <td>&euro;@($"{objectData.CalculatePrice(Model.NewReservation.start_date, Model.NewReservation.return_date):0.00}")</td>
+                        <td>@(string.Join(' ', objectData.AppliedSales.Select(x => x.days_to_rent + "-" + x.days_to_pay).Where(s => !string.IsNullOrWhiteSpace(s))) ?? "Geen")</td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="2"><button onclick="payReservation(@Model.NewReservation.reservation_number)" class="button">Markeren als betaald</button></td>
+                    <td colspan="2"><a href="/reservations/giveout?resId=@Model.NewReservation.reservation_number" class="button">Direct Uitgeven</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+</body>
+</html>

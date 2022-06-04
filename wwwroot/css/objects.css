@@ -1,0 +1,165 @@
+*:not(i) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent; }
+
+body {
+  background-color: #f8f8f8;
+  height: 100vh;
+  width: 100vw; }
+
+.button {
+  display: block;
+  border-radius: 15px;
+  padding: 2% 3%;
+  background-color: #379DE1;
+  color: #f8f8f8;
+  transition: background-color .2s ease-in;
+  font-size: 12pt;
+  text-decoration: none; }
+  .button:hover {
+    background-color: #bcdef5;
+    cursor: pointer; }
+  .button--delete {
+    background-color: #e22727;
+    padding: 5%; }
+    .button--delete:hover {
+      background-color: #EE8181; }
+  .button--date {
+    padding: .5% 1.5%; }
+
+.week-picker {
+  height: 7vh;
+  width: 100%; }
+  .week-picker * {
+    float: left;
+    margin: 1% 1% 0 0; }
+    .week-picker *:nth-child(4) {
+      margin-left: -4%; }
+
+.sort-button {
+  text-decoration: none;
+  color: #000000; }
+  .sort-button.button {
+    color: #f8f8f8;
+    text-align: center;
+    width: 60%;
+    margin: 0 auto; }
+
+.breadcrumb {
+  text-decoration: none;
+  color: #000000;
+  transition: color .2s; }
+  .breadcrumb:hover {
+    color: #bcdef5; }
+
+input[type="text"], input[type="number"], textarea {
+  background-color: #e6e6e6;
+  padding: 2% 2%;
+  resize: none; }
+  input[type="text"]:hover, input[type="number"]:hover, textarea:hover {
+    cursor: text; }
+  input[type="text"]:disabled, input[type="number"]:disabled, textarea:disabled {
+    background-color: transparent; }
+    input[type="text"]:disabled:hover, input[type="number"]:disabled:hover, textarea:disabled:hover {
+      cursor: default; }
+
+input[type="number"] {
+  width: 10%; }
+
+input[type="checkbox"][disabled]:checked {
+  outline: #379DE1;
+  color: #379DE1; }
+
+.h1 {
+  font-size: 2em;
+  font-weight: bold; }
+
+.h2 {
+  font-size: 1.5em;
+  font-weight: bold; }
+
+.h3 {
+  font-size: 1.17em;
+  font-weight: bold; }
+
+.float {
+  float: left;
+  margin: 0 2%;
+  padding: 0 1%; }
+
+th {
+  text-align: left; }
+
+.hidden {
+  display: none;
+  opacity: 0;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  transition: .5s; }
+  .hidden__close-button {
+    float: right;
+    margin-top: -5%;
+    margin-right: -5%;
+    padding: 1% 2%; }
+  .hidden__update-button {
+    float: left;
+    margin-top: 3%; }
+  .hidden__add-button {
+    float: right;
+    margin-top: 3%; }
+  .hidden__background {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 6; }
+  .hidden__content {
+    z-index: 7;
+    background-color: #f8f8f8;
+    padding: 2%;
+    border-radius: 15px; }
+    .hidden__content__table {
+      width: 100%;
+      text-align: left; }
+      .hidden__content__table__head__row {
+        display: flex;
+        justify-content: space-between; }
+      .hidden__content__table__body__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 120%;
+        margin-top: .3%; }
+        .hidden__content__table__body__row__element {
+          width: 23%; }
+          .hidden__content__table__body__row__element:nth-child(1) input {
+            width: 90%; }
+          .hidden__content__table__body__row__element:nth-child(2) input {
+            width: 30%; }
+
+.button {
+  float: right; }
+  .button:not(.button--delete) {
+    padding: 1% 2%;
+    margin: 1% 0; }
+  .button--edit, .button--delete {
+    float: left; }
+
+.content__table__body__row__element:nth-child(2) {
+  min-width: 20%; }
+.content__table__body__row__element:nth-child(3) input {
+  width: 23%; }
+
+/*# sourceMappingURL=objects.css.map */

@@ -4,18 +4,20 @@
 
 @{
     Layout = null;
+    ViewBag.Title = "Fietsen";
 }
 
 <!DOCTYPE html>
 <html lang="nl">
 <partial name="_HeadPartial"/>
+<link rel="stylesheet" href="/css/objects.css">
 <body>
 <partial name="_MenuPartial"/>
 <div class="hidden">
     <div class="hidden__background"></div>
     <div class="hidden__content">
         <button onclick="closeHidden();" class="hidden__close-button button"><i class="fa-solid fa-x"></i></button>
-        @if (@Model.ObjectTypeList.Count != 0) {
+        @if (Model.ObjectTypeList.Count != 0) {
             <table class="hidden__content__table">
                 <thead class="hidden__content__table__head">
                 <tr class="hidden__content__table__head__row">
@@ -25,39 +27,39 @@
                     <td class="hidden__content__table__head__row__element"></td>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="hidden__content__table__body">
                 <input type="hidden" name="type" value="ObjectType">
                 @foreach (ObjectType objectType in Model.ObjectTypeList) {
                     <form method="post" id="@objectType.id"></form>
-                    <tr class="hidden__content__table__body">
-                        <td class="hidden__content__table__body__element">
+                    <tr class="hidden__content__table__body__row">
+                        <td class="hidden__content__table__body__row__element">
                             <input type="text" name="description" form="@objectType.id" value="@objectType.description">
                         </td>
-                        <td class="hidden__content__table__body__element">
+                        <td class="hidden__content__table__body__row__element">
                             &euro;<input type="text" name="price" form="@objectType.id" value="@($"{objectType.price:0.00}")">
                         </td>
-                        <td class="hidden__content__table__body__element">
+                        <td class="hidden__content__table__body__row__element">
                             @if (Model.SalesList.Count == 0) {
                                 <p>Geen</p>
                             } else {
                                 foreach (Sale sale in Model.SalesList.GroupBy(x => x.id).Select(y => y.FirstOrDefault())) {
-                                    <input type="checkbox" class="float" form="@objectType.id" name="sale@(sale.id)" checked="@(Model.SalesList.Where(x => x.days_to_rent == sale.days_to_rent && x.object_type_id == objectType.id).ToList().Count != 0)">
+                                    <input type="checkbox" class="float" form="@objectType.id" name="sale@(sale.id)" checked="@(objectType.Sales.FindIndex(x => x.id == sale.id) >= 0)">
                                     <label for="sale@(sale.id)" class="float">@(sale.days_to_rent)-@(sale.days_to_pay)</label>
                                 }
                             }
                         </td>
-                        <td class="hidden__content__table__body__element">
-                            <button onclick="deleteType(@objectType.id)" class="hidden__content__table__body__element button button--delete"><i class="fa-solid fa-trash-can"></i></button>
+                        <td class="hidden__content__table__body__row__element">
+                            <button onclick="deleteType(@objectType.id, '@objectType.description')" class="hidden__content__table__body__row__element button button--delete"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
                 }
                 </tbody>
             </table>
-            <button onclick="onClickUpdate('edit', 'ObjectType', true);" name="updateObjectTypes" class="hidden__update-button button">Gegevens aanpassen</button>
-            <a href="/objects/addtype" class="hidden__add-button button">Fietssoort Toevoegen</a>
+            <button onclick="onClickUpdate('edit', 'ObjectType', true);" name="updateObjectTypes" class="hidden__update-button button button--edit">Gegevens aanpassen</button>
         } else {
-            <h1>Geen data gevonden</h1>
+            <h1 class="float">Geen fietssoorten gevonden.</h1>
         }
+        <a href="/objects/addtype" class="hidden__add-button button">Fietssoort Toevoegen</a>
     </div>
 </div>
 <div class="content">
@@ -66,56 +68,116 @@
     <h1 class="content__title">Fietsen</h1>
         @if (Model.ObjectList.Count != 0 ) {
             <button onclick="openHidden();" name="fetchObjects" class="content__type-button button">Fietssoorten bewerken</button>
-            
             <table class="content__table">
                 <thead class="content__table__head">
                 <tr class="content__table__head__row">
-                    <td class="content__table__head__row__element">Fietsnummer</td>
-                    <td class="content__table__head__row__element">Fietssoort</td>
-                    <td class="content__table__head__row__element">Prijs</td>
-                    <td class="content__table__head__row__element">Verhuurd</td>
-                    <td class="content__table__head__row__element">In onderhoud</td>
-                    <td class="content__table__head__row__element">Aanbiedingen</td>
+                    <th class="content__table__head__row__element">
+                        @if (Model.Sort == "objectNumber" && !Model.SortDesc) {
+                            <a class="sort-button" href="?sort=objectNumber&desc=true">Fietsnummer <i class="fa-solid fa-sort-down"></i></a>
+                        } else {
+                            <a class="sort-button" href="?sort=objectNumber">Fietsnummer <i class="fa-solid @(Model.Sort == "objectNumber" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                        }
+                    </th>
+                    <th class="content__table__head__row__element">
+                        @if (Model.Sort == "objectType" && !Model.SortDesc) {
+                            <a class="sort-button" href="?sort=objectType&desc=true">Fietssoort <i class="fa-solid fa-sort-down"></i></a>
+                        } else {
+                            <a class="sort-button" href="?sort=objectType">Fietssoort <i class="fa-solid @(Model.Sort == "objectType" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                        }
+                    </th>
+                    <th class="content__table__head__row__element">
+                        @if (Model.Sort == "price" && !Model.SortDesc) {
+                            <a class="sort-button" href="?sort=price&desc=true">Prijs <i class="fa-solid fa-sort-down"></i></a>
+                        } else {
+                            <a class="sort-button" href="?sort=price">Prijs <i class="fa-solid @(Model.Sort == "price" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                        }
+                    </th>
+                    <th class="content__table__head__row__element">
+                        @if (Model.Sort == "isLoanedOut" && !Model.SortDesc) {
+                            <a class="sort-button" href="?sort=isLoanedOut&desc=true">Vandaag verhuurd <i class="fa-solid fa-sort-up"></i></a>
+                        } else {
+                            <a class="sort-button" href="?sort=isLoanedOut">Vandaag verhuurd <i class="fa-solid @(Model.Sort == "isLoanedOut" && Model.SortDesc ? "fa-sort-down" : "fa-sort")"></i></a>
+                        }
+                    </th>
+                    <th class="content__table__head__row__element">
+                        @if (Model.Sort == "inService" && !Model.SortDesc) {
+                            <a class="sort-button" href="?sort=inService&desc=true">In onderhoud <i class="fa-solid fa-sort-down"></i></a>
+                        } else {
+                            <a class="sort-button" href="?sort=inService">In onderhoud <i class="fa-solid @(Model.Sort == "inService" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                        }
+                    </th>
+                    <th class="content__table__head__row__element">
+                        @if (Model.Sort == "size" && !Model.SortDesc) {
+                            <a class="sort-button" href="?sort=size&desc=true">Grootte <i class="fa-solid fa-sort-down"></i></a>
+                        } else {
+                            <a class="sort-button" href="?sort=size">Grootte <i class="fa-solid @(Model.Sort == "size" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                        }
+                    </th>
+                    <th class="content__table__head__row__element">
+                        @if (Model.Sort == "sales" && !Model.SortDesc) {
+                            <a class="sort-button" href="?sort=sales&desc=true">Aanbiedingen <i class="fa-solid fa-sort-down"></i></a>
+                        } else {
+                            <a class="sort-button" href="?sort=sales">Aanbiedingen <i class="fa-solid @(Model.Sort == "sales" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
+                        }
+                    </th>
+                    <th class="content__table__head__row__element">
+                        <a class="sort-button button" href="/objects">Filter leegmaken</a>
+                    </th>
                 </tr>
                 </thead>
                 <tbody class="content__table__body">
                 <input type="hidden" name="type" value="Object">
                 @foreach (ObjectData obj in Model.ObjectList) {
                     <form method="post" id="@obj.object_number"></form>
-                    <tr class="content__table__body">
-                        <td class="content__table__body__element">
+                    <tr class="content__table__body__row">
+                        <td class="content__table__body__row__element">
                             <input disabled="disabled" type="text" name="object_number" form="@obj.object_number" value="@obj.object_number">
                         </td>
-                        <td class="content__table__body__element">
-                            <!--                    TODO: make select dropdown-->
+                        <td class="content__table__body__row__element">
                             <select name="object_type" form="@obj.object_number">
                                 @foreach (ObjectType objectType in Model.ObjectTypeList) {
                                     <option selected="@(objectType.id == obj.object_type_id)" value="@objectType.id">@objectType.description</option>
                                 }
                             </select>
                         </td>
-                        <td class="content__table__body__element">
-                            &euro;<input disabled="disabled" type="text" name="price" form="@obj.object_number" value="@($"{obj.price:0.00}")">
+                        <td class="content__table__body__row__element">
+                            &euro;<input disabled="disabled" type="text" name="price" form="@obj.object_number" value="@($"{obj.Type.price:0.00}")">
                         </td>
-                        <td class="content__table__body__element">
-                            <input type="checkbox" name="loaned_out" form="@obj.object_number" checked="@obj.loaned_out">
+                        <td class="content__table__body__row__element">
+                            <input disabled="disabled" type="checkbox" name="loaned_out" form="@obj.object_number" checked="@(!obj.loaned_out)">
                         </td>
-                        <td class="content__table__body__element">
+                        <td class="content__table__body__row__element">
                             <input type="checkbox" name="in_service" form="@obj.object_number" checked="@obj.in_service">
                         </td>
-                        <td>
-                            @foreach (Sale sale in Model.SalesList.Where(x => x.object_type_id == obj.object_type_id)) {
-                                <p class="float">@(sale.days_to_rent)-@(sale.days_to_pay)</p>
+                        <td class="content__table__body__row__element">
+                            <select form="@obj.object_number" name="size">
+                                <option value="">Geen</option>
+                                @foreach (string size in Enum.GetNames(typeof(Sizes))) {
+                                    <option selected="@(obj.size == size)" value="@size">@size.ToUpper()</option>
+                                }
+                            </select>
+                        </td>
+                        <td class="content__table__body__row__element">
+                            @if (obj.Type.Sales.Count == 0) {
+                                <p>Geen</p>
+                            } else {
+                                @foreach (Sale sale in obj.Type.Sales) {
+                                    <p class="float">@(sale.days_to_rent)-@(sale.days_to_pay)</p>
+                                }
                             }
+                        </td>
+                        <td class="content__table__body__row__element">
+                            <button onclick="deleteObject(@obj.object_number)" class="content__table__body__row__element button button--delete"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
                 }
                 </tbody>
             </table>
-            <button onclick="onClickUpdate('edit', 'Object', false);" name="updateObjects" class="content__update-button button">Gegevens aanpassen</button>
+            <button onclick="onClickUpdate('edit', 'Object', false);" name="updateObjects" class="content__update-button button button--edit">Gegevens aanpassen</button>
         } else {
-            <h1>Geen data gevonden</h1>
+            <h1 class="float">Geen fietsen gevonden.</h1>
         }
+        <a href="/objects/add" class="content__add-obj-button button"><i class="fa-solid fa-plus"></i> Fiets Toevoegen</a>
 </div>
 </body>
 </html>

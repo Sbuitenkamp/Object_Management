@@ -46,10 +46,40 @@ body {
   
   &--delete {
     background-color: darken($warning, 20%);
+    padding: 5%;
     
     &:hover {
       background-color: $warning;
     }
+  }
+  
+  &--date {
+    padding: .5% 1.5%;
+  }
+}
+
+.week-picker {
+  height: 7vh;
+  width: 100%;
+  & * {
+    float: left;
+    margin: 1% 1% 0 0;
+
+    &:nth-child(4) {
+      margin-left: -4%;
+    }
+  }
+}
+
+.sort-button {
+  text-decoration: none;
+  color: $black;
+  
+  &.button {
+    color: $white;
+    text-align: center;
+    width: 60%;
+    margin: 0 auto;
   }
 }
 
@@ -63,10 +93,11 @@ body {
   }
 }
 
-input[type="text"] {
+input[type="text"], input[type="number"], textarea {
   background-color: $grey;
-  padding: 1% 2%;
-  
+  padding: 2% 2%;
+  resize: none;
+
   &:hover {
     cursor: text;
   }
@@ -80,6 +111,15 @@ input[type="text"] {
   }
 }
 
+input[type="number"] {
+  width: 10%;
+}
+
+input[type="checkbox"][disabled]:checked {
+  outline: $blue;
+  color: $blue;
+}
+
 // font styling without breaking the heading flow
 .h1 {
   font-size: 2em;
@@ -91,7 +131,7 @@ input[type="text"] {
   font-weight: bold;
 }
 
-.h2 {
+.h3 {
   font-size: 1.17em;
   font-weight: bold;
 }
@@ -101,4 +141,8 @@ input[type="text"] {
   float: left;
   margin: 0 2%;
   padding: 0 1%;
+}
+
+th {
+  text-align: left;
 }

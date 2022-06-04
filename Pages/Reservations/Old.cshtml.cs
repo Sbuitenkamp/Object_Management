@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Object_management.Pages;
+namespace Object_management.Pages.Reservations;
 
-public class Customers : PageModel
+public class Old : PageModel
 {
     public void OnGet()
     {

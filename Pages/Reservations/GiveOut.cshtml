@@ -1,0 +1,49 @@
+@page
+@using Object_management.Models.FormDataFormats
+@using Object_management.Entity
+@model Object_management.Pages.Reservations.GiveOut
+
+@{
+    Layout = null;
+    ViewBag.Title = "Reservering Uitgeven";
+}
+
+<!DOCTYPE html>
+
+<html>
+<partial name="_HeadPartial"/>
+<link rel="stylesheet" href="/css/reservations.css">
+<body>
+<partial name="_MenuPartial"/>
+<a href="/reservations" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug naar reserveringsoverzicht</a>
+<div class="content">
+    <h1 class="warning">@ViewData["warning"]</h1>
+    <h1 class="confirmation">@ViewData["confirmation"]</h1>
+    <h1>Reservering uitgeven</h1>
+    @if (Model.ReservationNumber == -1 || Model.CurrentReservation == null) {
+        <h2 class="warning warning--visible">Er is iets fout gegaan tijdens het ophalen van de uit te lenen reservering. Probeer het nog eens vanaf de <a href="/reservations">reserveringspagina</a>.</h2>
+    } else {
+        <h2 class="h3">Reserveringsnummer: @(Model.ReservationNumber)</h2>
+        @foreach (ObjectAmount amount in Model.CurrentReservation.ObjectAmounts) {
+            <p>@(Model.CurrentReservation.Objects.First(x => x.object_type_id == amount.object_type_id).Type.description): @(amount.amount)x</p>
+        }
+        <br>
+        <h2 class="h3">Selecteer objecten om uit te geven</h2>
+        <form method="post" class="content__form">
+            @foreach (ObjectAmount amount in Model.CurrentReservation.ObjectAmounts) {
+                <div id="check-@amount.object_type_id" class="checkContainer" limit="@amount.amount">
+                    <p class="type">@(Model.CurrentReservation.Objects.First(x => x.object_type_id == amount.object_type_id).Type.description)</p>
+                    @foreach (ObjectData obj in Model.AvailableObjects.Where(x => x.object_type_id == amount.object_type_id)) {
+                        <div class="checkWrap">
+                            <input name="@obj.object_number" type="checkbox" checked="@(Model.AvailableObjects.Where(x => x.object_type_id == amount.object_type_id).ToList().IndexOf(obj) < amount.amount)"> 
+                            <label for="@obj.Type.description">Fietsnummer: @obj.object_number @(obj.size != string.Empty ? "Grootte: " + obj.size.ToUpper() : null)</label>
+                        </div>
+                    }
+                </div>
+            }
+        </form>
+        <button onclick="onClickGiveOut(@Model.ReservationNumber)" class="content__form__button button">Uitgeven</button>
+    }
+</div>
+</body>
+</html>

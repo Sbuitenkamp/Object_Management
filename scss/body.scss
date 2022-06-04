@@ -1,0 +1,137 @@
+@import "main";
+
+.sidebar {
+  height: 100%;
+  width: 20%;
+  background-color: $blue;
+  float: left;
+  box-sizing: border-box;
+  padding: 1%;
+
+  &__header {
+    margin: 0 auto;
+
+    &__link {
+      color: $white;
+      text-decoration: none;
+    }
+  }
+
+  &__nav {
+    width: 90%;
+    margin: 10% auto;
+
+    &__list {
+      width: 100%;
+
+      &__element {
+        width: 85%;
+        list-style: none;
+        background-color: $white;
+        @include borderRadius();
+        margin: 5% 0;
+        transition: background-color .2s ease-in;
+
+        &:hover {
+          background-color: $lightblue;
+          cursor: pointer;
+        }
+
+        &__link {
+          padding: 2% 0 2% 5%;
+          display: block;
+          width: 95%;
+          text-decoration: none;
+          color: $black;
+        }
+      }
+    }
+  }
+}
+
+.content {
+  float: left;
+  margin: .5% 1%;
+  width: 78%;
+
+  &__form {
+    width: 40%;
+    height: 20%;
+
+    &__row {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      margin: 1% 0;
+      width: 100%;
+
+      &__label {
+        margin: 0 2% 0 0;
+      }
+
+      &__input {
+        margin: 0 1%;
+      }
+    }
+
+    &__button {
+      padding: 1.5% 2.5%;
+    }
+  }
+
+  &__title {
+    float: left;
+    margin: 2% 1% 1% 0;
+  }
+
+  &__type-button {
+    float: right;
+    margin: 2% 2% 1%;
+    padding: .8% 1.5%;
+  }
+
+  &__update-button {
+    float: left;
+    margin: 1% 0;
+    padding: 1% 2%;
+  }
+
+  &__table {
+    width: 100%;
+    overflow-x: auto;
+
+    &__body {
+      &__row {
+        &__element {
+          //width: 15%;
+          border-bottom: 1px solid $grey;
+        }
+      }
+    }
+  }
+}
+
+.confirmation {
+  min-width: 40%;
+  background-color: $confirmed;
+  padding: 1%;
+  border: solid darken($confirmed, 20%) 1px;
+  display: none;
+}
+
+.warning { 
+  min-width: 40%;
+  background-color: $warning;
+  padding: 1%;
+  border: solid darken($warning, 20%) 1px;
+  display: none;
+  
+  &--visible {
+    display: block;
+  }
+}
+
+.breadcrumb {
+  margin: .5%;
+  display: inline-block;
+}

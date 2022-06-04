@@ -1,0 +1,66 @@
+.hide {
+  transition: 0.2s ease-out;
+  overflow: hidden;
+  display: none; }
+
+.button.sort-button {
+  width: 10%;
+  float: right;
+  padding: 1% 2%;
+  margin: 1% 0; }
+
+.content__title {
+  width: 80%; }
+.content__add-obj-button {
+  padding: 1% 2%;
+  margin: 1% 0;
+  float: right; }
+.content__table {
+  width: 100%; }
+  .content__table__head {
+    width: 100%; }
+    .content__table__head__row {
+      width: 100%; }
+      .content__table__head__row__element {
+        width: 10%; }
+        .content__table__head__row__element:first-child {
+          width: 2%; }
+        .content__table__head__row__element--button {
+          width: 20%; }
+  .content__table__body {
+    width: 100%; }
+    .content__table__body__row {
+      width: 100%; }
+      .content__table__body__row__element {
+        width: 10%;
+        white-space: nowrap; }
+        .content__table__body__row__element:first-child {
+          width: 2%; }
+        .content__table__body__row__element .button {
+          width: 50%;
+          padding: 5%; }
+    .content__table__body--hidden__customer-table {
+      border-spacing: 1rem .3rem; }
+
+[data-toggle="toggle"] {
+  display: none; }
+
+.pointer:hover {
+  cursor: pointer; }
+
+.form, .result {
+  float: left; }
+
+.form {
+  width: 60%; }
+
+.result {
+  width: 30%; }
+
+.checkContainer {
+  width: 100%;
+  margin: 1% 0;
+  display: flex;
+  flex-direction: column; }
+
+/*# sourceMappingURL=reservations.css.map */

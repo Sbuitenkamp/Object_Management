@@ -1,0 +1,122 @@
+@import "main";
+
+.hidden {
+  display: none;
+  opacity: 0;
+  // center self
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  // center content
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 5;
+  transition: .5s;
+
+  &__close-button {
+    float: right;
+    margin-top: -5%;
+    margin-right: -5%;
+    padding: 1% 2%;
+  }
+
+  &__update-button {
+    float: left;
+    margin-top: 3%;
+  }
+
+  &__add-button {
+    float: right;
+    margin-top: 3%;
+  }
+
+  &__background {
+    background-color: rgba(0,0,0,0.5);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 6;
+  }
+
+  &__content {
+    z-index: 7;
+    background-color: $white;
+    padding: 2%;
+    @include borderRadius();
+
+    &__table {
+      width: 100%;
+      text-align: left;
+
+      &__head {
+        &__row {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+
+      &__body {
+        &__row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 120%;
+          margin-top: .3%;
+
+          &__element {
+            width: 23%;
+
+            &:nth-child(1) {
+              input {
+                width: 90%;
+              }
+            }
+
+            &:nth-child(2) {
+              input {
+                width: 30%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.button {
+  float: right;
+
+  &:not(&--delete) {
+    padding: 1% 2%;
+    margin: 1% 0;
+  }
+  
+  &--edit, &--delete {
+    float: left;
+  }
+}
+
+.content {  
+  &__table {
+    &__body {
+      &__row {
+        &__element {
+          &:nth-child(2) {
+            min-width: 20%;
+          }
+
+          &:nth-child(3) {
+            input {
+              width: 23%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

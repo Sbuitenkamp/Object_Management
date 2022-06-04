@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Object_management.Models;
+using Object_management.Entity;
 using Object_management.Models.FormDataFormats;
+using Object_management.Repositories;
 
 namespace Object_management.Pages.Objects;
 
@@ -12,21 +13,20 @@ public class AddType : PageModel
     [BindProperty]
     public float Price { get; set; }
 
-    private DbHandler Db { get; set; }
+    private ObjectRepository ObjectRepo { get; set; }
 
     public void OnPost()
     {
-        Db = new DbHandler();
-        Form form = new Form() {
+        ObjectRepo = new ObjectRepository();
+        ObjectType objectTypeToInsert = new ObjectType {
             description = Description,
             price = Price
         };
-        FormData data = new FormData() {
-            Table = "ObjectType",
-            Forms = new List<Form> { form }
-        };
 
-        if (Db.Insert(data) == 0) ViewData["warning"] = "Er bestaat al een fietssoort met die beschrijving.";
-        else ViewData["confirmation"] = "Fietssoort toegevoegd.";
+        int rowCount = ObjectRepo.CreateObjectType(objectTypeToInsert);
+        
+        // TODO FIX
+        // if (rowCount == 0) ViewData["warning"] = "Er bestaat al een fietssoort met die beschrijving.";
+        // else ViewData["confirmation"] = "Fietssoort toegevoegd.";
     }
 }
