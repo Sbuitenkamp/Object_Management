@@ -71,6 +71,7 @@
                     }
                 </th>
                 <th class="content__table__head__row__element content__table__head__row__element--button"></th>
+                <th class="content__table__head__row__element content__table__head__row__element--button"></th>
             </tr>
             </thead>
             <tbody class="content__table__body">
@@ -78,7 +79,7 @@
             @foreach (Reservation reservation in Model.GivenOutReservations) {
                 <form method="post" id="@reservation.reservation_number"></form>
                 <p class="indicator"></p>
-                <tr class="content__table__body__row">
+                <tr class="content__table__body__row @(reservation.return_date < DateTime.Today ? "warning warning--tr" : "")">
                     <td class="content__table__body__row__element content__table__body__row__element--toggle">
                         <label for="toggle-@reservation.reservation_number"><i class="fa-solid fa-plus pointer"></i></label>
                         <input onclick="toggleHidden(this)" type="checkbox" name="toggle" id="toggle-@reservation.reservation_number" data-toggle="toggle">
@@ -103,6 +104,9 @@
                     </td>
                     <td class="content__table__body__row__element">
                         <input type="checkbox" name="paid" form="@reservation.reservation_number" checked="@reservation.paid">
+                    </td>
+                    <td class="content__table__body__row__element">
+                        <button onclick="returnReservation(@reservation.reservation_number)" class="content__table__body__row__element button"><i class="fa-solid fa-arrow-left"></i></button>
                     </td>
                     <td class="content__table__body__row__element">
                         <button onclick="deleteReservation(@reservation.reservation_number)" class="content__table__body__row__element button button--delete"><i class="fa-solid fa-trash-can"></i></button>
@@ -147,7 +151,7 @@
                                 <td>@objectData.object_number</td>
                                 <td>@objectData.Type.description</td>
                                 <td>&euro;@($"{objectData.CalculatePrice(reservation.start_date, reservation.return_date):0.00}")</td>
-                                <td><button onclick="unReserveObject(@objectData.object_number, @reservation.reservation_number)" class="button button--delete"><i class="fa-solid fa-trash-can"></i></button></td>
+                                <td><button onclick="unReserveObject(@objectData.Type.id, @reservation.reservation_number, '@objectData.Type.description')" class="button button--delete"><i class="fa-solid fa-trash-can"></i></button></td>
                             </tr>
                         }
                         </tbody>
@@ -268,6 +272,7 @@
                                 <th>Email</th>
                                 <th>Telefoonnummer</th>
                                 <th>Adres</th>
+                                <th>Opmerking</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -277,6 +282,7 @@
                                 <td>@reservation.CustomerData.email</td>
                                 <td>@reservation.CustomerData.telephone</td>
                                 <td>@reservation.CustomerData.adres</td>
+                                <td>@reservation.comment</td>
                             </tr>
                             </tbody>
                         </table>
@@ -297,7 +303,11 @@
                                 <td>@objectData.Type.description</td>
                                 <td>@reservation.ObjectAmounts.First(x => x.object_type_id == objectData.Type.id).amount</td>
                                 <td>&euro;@($"{objectData.CalculatePrice(reservation.start_date, reservation.return_date):0.00}")</td>
-                                <td><button onclick="unReserveObject(@objectData.object_number, @reservation.reservation_number)" class="button button--delete"><i class="fa-solid fa-trash-can"></i></button></td>
+                                @if (reservation.Objects.Count > 1) {
+                                    <td><button onclick="unReserveObject(@objectData.Type.id, @reservation.reservation_number, '@objectData.Type.description')" class="button button--delete"><i class="fa-solid fa-trash-can"></i></button></td>
+                                } else {
+                                    <td><button onclick="deleteReservation(@reservation.reservation_number)" class="button button--delete"><i class="fa-solid fa-trash-can"></i></button></td>
+                                }
                             </tr>
                         }
                         </tbody>
@@ -307,10 +317,10 @@
             }
         </tbody>
         </table>
-        <button onclick="onClickUpdate('edit', 'Reservation', false);" name="updateObjects" class="content__update-button button">Gegevens aanpassen</button>
     } else {
         <h1 class="float">Geen reserveringen gevonden.</h1>
     }
+    <button onclick="onClickUpdate('edit', 'Reservation', false);" name="updateObjects" class="content__update-button button">Gegevens aanpassen</button>   
     <a href="/reservations/add" class="content__add-obj-button button"><i class="fa-solid fa-plus"></i> Reservering maken</a>
 </div>
 </body>

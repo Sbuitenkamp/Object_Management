@@ -179,6 +179,8 @@ th {
   display: none; }
   .warning--visible {
     display: block; }
+  .warning--tr {
+    display: table-row; }
 
 .breadcrumb {
   margin: .5%;

@@ -54,6 +54,18 @@ function deleteCustomer(id, name) {
     post (data, "/Customers")
 }
 
+function returnReservation(id) {
+    if (!confirm(`Weet u zeker dat u reservering ${id} wilt inleveren?`)) return;
+    const paid = document.querySelector(`input[type="checkbox"][form="${id}"]`).checked;
+    if (!paid) return alert(`Reservering ${id} is nog niet betaald!`);
+
+    const data = {
+        QueryType: "edit",
+        Reservations: [ { reservation_number: id, returned: true, paid }]
+    };
+    post (data, "/Reservations")
+}
+
 function deleteReservation(id) {
     if (!confirm(`Weet u zeker dat u reservering ${id} wilt verwijderen?`)) return;
     const data = {
@@ -67,18 +79,18 @@ function payReservation(id) {
     if (!confirm(`Weet u zeker dat u reservering ${id} als betaald wilt markeren?`)) return;
     const data = {
         QueryType: "edit",
-        Reservations: [ { reservation_number: id, paid: true }]
+        Reservations: [ { reservation_number: id, paid: true, returned: false }]
     };
     post (data, "/Reservations")
 }
 
-function unReserveObject(id, resId) {
-    if (!confirm(`Weet u zeker dat u object ${id} uit reservering ${resId} wilt verwijderen?`)) return;
+function unReserveObject(id, resId, name) {
+    if (!confirm(`Weet u zeker dat u objectsoort ${name} uit reservering ${resId} wilt verwijderen?`)) return;
     const data = {
         QueryType: "drop",
         Reservations: [ { 
             reservation_number: resId, 
-            Objects: [ { object_number: id }]
+            Objects: [ { Type: { id } }]
         }]
     };
     post (data, "/Reservations")

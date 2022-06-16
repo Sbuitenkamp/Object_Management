@@ -1,10 +1,10 @@
 # Object_Management
 
 TODO:
-- Return lend out reservation
+- -1 and +1 bikes for reservation
 - User feedback
-  - Alert when not returned
 - Checks to prevent data corruption
 - History of reservations
+  - almost done
 - Styling
 - #### FINAL TESTS

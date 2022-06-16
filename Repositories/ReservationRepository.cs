@@ -27,8 +27,6 @@ public class ReservationRepository: Repository
             });
 
             foreach (ObjectAmount objectAmount in reservationToCreate.ObjectAmounts) {
-                Console.WriteLine("INSERT INTO is_reserved_at (reservation_number, object_type_id, amount) VALUES (" + newId + ", " + objectAmount.object_type_id + ", " + objectAmount.amount + ");");
-
                 Connection.Query(typeQuery, new {
                     reservation_number = newId,
                     objectAmount.object_type_id,
@@ -165,7 +163,49 @@ public class ReservationRepository: Repository
                     INNER JOIN ObjectType ON Object.object_type_id = ObjectType.id 
                     LEFT JOIN is_applied_to ON ObjectType.id = is_applied_to.object_type_id 
                     LEFT JOIN Sale ON is_applied_to.sale_id = Sale.id
-                WHERE Reservation.start_date <= @today AND Reservation.return_date >= @today
+                WHERE (Reservation.start_date <= @today AND Reservation.return_date >= @today AND Reservation.returned = false) OR Reservation.returned = false
+                ORDER BY Reservation.start_date DESC, Reservation.return_date DESC;
+            ";
+            return Connection.Query<Reservation, Customer, ObjectData, ObjectType, Sale, Reservation>(reservationQuery, (reservation, customer, objectData, objectType, sale) =>
+            {
+                reservation.CustomerData = customer;
+                objectData.Type = objectType;
+                if (sale != null) objectData.Type.Sales.Add(sale);
+                reservation.Objects.Add(objectData);
+                return reservation;
+            }, new { today },splitOn: "reservation_number,id,object_number,id,id").GroupBy(reservation => reservation.reservation_number).Select(g =>
+            {
+                // group the sales into the objectType
+                Reservation groupedReservation = g.First();
+                if (groupedReservation.Objects.Count == 0) return groupedReservation;
+
+                List<ObjectData> listObjects = g.Select(p => p.Objects.Single()).ToList();
+                groupedReservation.Objects = listObjects.DistinctBy(a => a.object_number).ToList();
+
+                return groupedReservation;
+            }).ToList();
+        } catch (Exception e) {
+            Console.WriteLine(e);
+            throw;
+        } finally {
+            CloseConnection();
+        }
+    }
+    
+    public List<Reservation> SelectOldReservations(DateTime today)
+    {
+        try {
+            Connect();
+            string reservationQuery = @"
+                SELECT Reservation.*, Customer.*, Object.object_number, ObjectType.*, Sale.* 
+                FROM Reservation 
+                    INNER JOIN Customer ON Reservation.customer_id = Customer.id 
+                    INNER JOIN ReservationDate ON Reservation.reservation_number = ReservationDate.reservation_number 
+                    INNER JOIN Object ON ReservationDate.object_number = Object.object_number 
+                    INNER JOIN ObjectType ON Object.object_type_id = ObjectType.id 
+                    LEFT JOIN is_applied_to ON ObjectType.id = is_applied_to.object_type_id 
+                    LEFT JOIN Sale ON is_applied_to.sale_id = Sale.id
+                WHERE Reservation.return_date < @today AND Reservation.returned = true
                 ORDER BY Reservation.start_date DESC, Reservation.return_date DESC;
             ";
             return Connection.Query<Reservation, Customer, ObjectData, ObjectType, Sale, Reservation>(reservationQuery, (reservation, customer, objectData, objectType, sale) =>
@@ -204,7 +244,7 @@ public class ReservationRepository: Repository
                     INNER JOIN ReservationDate ON Reservation.reservation_number = ReservationDate.reservation_number
                     INNER JOIN Object ON ReservationDate.object_number = Object.object_number
                     INNER JOIN ObjectType ON Object.object_type_id = ObjectType.id
-                WHERE Reservation.return_date = @today;
+                WHERE Reservation.return_date = @today AND Reservation.returned = false;
             ", (reservation, data, type, customer) => {
                 data.Type = type;
                 reservation.Objects.Add(data);
@@ -445,7 +485,7 @@ public class ReservationRepository: Repository
         try {
             Connect();
             foreach (Reservation reservation in reservationsToUpdate) {
-                rowCount += Connection.ExecuteScalar<int>("UPDATE Reservation SET Paid = @paid WHERE reservation_number = @reservationNr", new { reservation.paid, reservationNr = reservation.reservation_number });
+                rowCount += Connection.ExecuteScalar<int>("UPDATE Reservation SET paid = @paid, returned = @returned WHERE reservation_number = @reservationNr", new { reservation.paid, reservation.returned, reservationNr = reservation.reservation_number });
                 // todo: change objects
             }
         } catch (Exception e) {
@@ -483,7 +523,7 @@ public class ReservationRepository: Repository
         int rowCount = 0;
         try {
             Connect();
-            rowCount += Connection.ExecuteScalar<int>("DELETE FROM ReservationDate WHERE reservation_number = @reservationNr AND object_number = @objNr;", new { reservationNr = reservation.reservation_number, objNr = reservation.Objects[0].object_number });
+            rowCount += Connection.ExecuteScalar<int>("DELETE FROM is_reserved_at WHERE reservation_number = @reservationNr AND object_type_id = @objNr;", new { reservationNr = reservation.reservation_number, objNr = reservation.Objects[0].Type.id });
         } catch (Exception e) {
             Console.WriteLine(e);
             throw;

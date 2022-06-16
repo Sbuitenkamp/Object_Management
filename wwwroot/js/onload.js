@@ -7,7 +7,15 @@ window.onload = () => {
         if (!option.selected) return;
         option.setAttribute("defaultSelected", "true");
     });
-    
+
+    // custom input number fields
+    document.querySelectorAll(`input[type="number"]`).forEach(input => {
+        console.log(input)
+        input.addEventListener("input", function (e) {
+            if (input.value <= 0) input.value = 0;
+        });
+    });
+
     // limit checkboxes
     document.querySelectorAll(`div.checkContainer[limit] div.checkWrap input[type="checkbox"]`).forEach(check => {
         const container = check.parentElement.parentElement

@@ -15,6 +15,7 @@ public class Reservation
     // misc reservation details
     public string residence { get; set; }
     public string comment { get; set; }
+    public bool returned { get; set; }
 
     // relation info
     public List<ObjectData> Objects { get; set; } = new List<ObjectData>();

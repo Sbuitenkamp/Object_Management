@@ -129,6 +129,10 @@
   &--visible {
     display: block;
   }
+  
+  &--tr {
+    display: table-row;
+  }
 }
 
 .breadcrumb {
