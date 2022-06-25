@@ -91,13 +91,18 @@
 .button {
   float: right;
 
-  &:not(&--delete) {
+  &:not(&--delete, &--sales) {
     padding: 1% 2%;
     margin: 1% 0;
   }
   
   &--edit, &--delete {
     float: left;
+  }
+  
+  &--sales {
+    padding: 1% 5%;
+    margin: 0 -15% 0 0;
   }
 }
 

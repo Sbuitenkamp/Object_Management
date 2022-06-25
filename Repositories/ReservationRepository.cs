@@ -5,7 +5,7 @@ using Object_management.Models.FormDataFormats;
 
 namespace Object_management.Repositories;
 
-public class ReservationRepository: Repository
+public class ReservationRepository : Repository
 {
     private readonly ObjectRepository ObjectRepo = new ObjectRepository();
     public int CreateReservation(Reservation reservationToCreate)

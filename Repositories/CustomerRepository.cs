@@ -3,7 +3,7 @@ using Object_management.Entity;
 
 namespace Object_management.Repositories;
 
-public class CustomerRepository: Repository
+public class CustomerRepository : Repository
 {
     public int Create(Customer customerData)
     {

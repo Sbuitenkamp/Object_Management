@@ -102,10 +102,7 @@
                         <input disabled="disabled" type="text" name="total" form="@reservation.reservation_number" value="&euro;@($"{reservation.Objects.Select(x => x.CalculatePrice(reservation.start_date, reservation.return_date)).Sum():0.00}")">
                     </td>
                     <td class="content__table__body__row__element">
-                        <input type="checkbox" name="paid" form="@reservation.reservation_number" checked="@reservation.paid">
-                    </td>
-                    <td class="content__table__body__row__element">
-                        <button onclick="deleteReservation(@reservation.reservation_number)" class="content__table__body__row__element button button--delete"><i class="fa-solid fa-trash-can"></i></button>
+                        <input disabled="disabled" type="checkbox" name="paid" form="@reservation.reservation_number" checked="@reservation.paid">
                     </td>
                 </tr>
                 <tr class="content__table__body__row content__table__body__row--hidden hide" id="reservation-body-@reservation.reservation_number">
@@ -147,7 +144,6 @@
                                 <td>@objectData.object_number</td>
                                 <td>@objectData.Type.description</td>
                                 <td>&euro;@($"{objectData.CalculatePrice(reservation.start_date, reservation.return_date):0.00}")</td>
-                                <td><button onclick="unReserveObject(@objectData.Type.id, @reservation.reservation_number, '@objectData.Type.description')" class="button button--delete"><i class="fa-solid fa-trash-can"></i></button></td>
                             </tr>
                         }
                         </tbody>

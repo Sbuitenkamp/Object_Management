@@ -16,32 +16,32 @@
 <a href="/objects" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug naar fietsoverzicht</a>
 <div class="content">
     <h1 class="warning">@ViewData["warning"]</h1>
-        <h1 class="confirmation">@ViewData["confirmation"]</h1>
-        <h1>Fietssoort toevoegen</h1>
-        <form class="content__form" method="post" action="">
-            <div class="content__form__row">
-                <label class="content__form__row__label" for="ObjectNumber">Objectnummer</label>
-                <input type="text" class="content__form__row__input" asp-for="ObjectNumber">
-            </div>
-            <div class="content__form__row">
-                <label class="content__form__row__label" for="ObjectTypeId">Fietssoort</label>
-                <select class="content__form__row__select" asp-for="ObjectTypeId">
-                    @foreach (ObjectType objectType in Model.ObjectTypes) {
-                        <option value="@objectType.id">@objectType.description</option>
-                    }
-                </select>
-            </div>
-            <div class="content__form__row">
-                <label class="content__form__row__label" for="Size">Grootte</label>
-                <select asp-for="Size">
-                    <option value="">Geen</option>
-                    @foreach (string size in Enum.GetNames(typeof(Sizes))) {
-                        <option value="@size">@size.ToUpper()</option>
-                    }
-                </select>
-            </div>
-            <button type="submit" class="content__form__button button">Toevoegen</button>
-        </form>
+    <h1 class="confirmation">@ViewData["confirmation"]</h1>
+    <h1>Fietssoort toevoegen</h1>
+    <form class="content__form" method="post" action="">
+        <div class="content__form__row">
+            <label class="content__form__row__label" for="ObjectNumber">Objectnummer</label>
+            <input type="number" class="content__form__row__input input-text" asp-for="ObjectNumber">
+        </div>
+        <div class="content__form__row">
+            <label class="content__form__row__label" for="ObjectTypeId">Fietssoort</label>
+            <select class="content__form__row__select" asp-for="ObjectTypeId">
+                @foreach (ObjectType objectType in Model.ObjectTypes) {
+                    <option value="@objectType.id">@objectType.description</option>
+                }
+            </select>
+        </div>
+        <div class="content__form__row">
+            <label class="content__form__row__label" for="Size">Grootte</label>
+            <select asp-for="Size">
+                <option value="">Geen</option>
+                @foreach (string size in Enum.GetNames(typeof(Sizes))) {
+                    <option value="@size">@size.ToUpper()</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="content__form__button button">Toevoegen</button>
+    </form>
 </div>
 </body>
 </html>

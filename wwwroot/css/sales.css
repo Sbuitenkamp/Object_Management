@@ -101,4 +101,18 @@ input[type="checkbox"][disabled]:checked {
 th {
   text-align: left; }
 
-/*# sourceMappingURL=index.css.map */
+.content .breadcrumb {
+  width: 100%; }
+.content__table {
+  width: 50%; }
+  .content__table__body__row__element {
+    width: 38%; }
+.content .button {
+  float: right;
+  margin: 1% 0; }
+  .content .button--delete {
+    margin: 7% 0 0; }
+  .content .button--edit {
+    float: left; }
+
+/*# sourceMappingURL=sales.css.map */

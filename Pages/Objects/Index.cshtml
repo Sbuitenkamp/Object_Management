@@ -23,7 +23,7 @@
                 <tr class="hidden__content__table__head__row">
                     <td class="hidden__content__table__head__row__element">Omschrijving</td>
                     <td class="hidden__content__table__head__row__element">Prijs</td>
-                    <td class="hidden__content__table__head__row__element">Aanbiedingen</td>
+                    <td class="hidden__content__table__head__row__element">Aanbiedingen <a class="button button--sales" href="/objects/sales">bewerken</a></td>
                     <td class="hidden__content__table__head__row__element"></td>
                 </tr>
                 </thead>
@@ -66,8 +66,8 @@
     <h1 class="warning">@ViewData["warning"]</h1>
     <h1 class="confirmation">@ViewData["confirmation"]</h1>
     <h1 class="content__title">Fietsen</h1>
+        <button onclick="openHidden();" name="fetchObjects" class="content__type-button button">Fietssoorten bewerken</button>
         @if (Model.ObjectList.Count != 0 ) {
-            <button onclick="openHidden();" name="fetchObjects" class="content__type-button button">Fietssoorten bewerken</button>
             <table class="content__table">
                 <thead class="content__table__head">
                 <tr class="content__table__head__row">

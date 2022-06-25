@@ -1,0 +1,33 @@
+@import "main";
+
+.content {
+  .breadcrumb {
+    width: 100%;
+  }
+  
+  &__table {
+    width: 50%;
+    &__body {
+      &__row {
+        &__element {
+          & {
+            width: 38%;
+          }
+        }
+      }
+    }
+  }
+
+  .button {
+    float: right;
+    margin: 1% 0;
+    
+    &--delete {
+      margin: 7% 0 0;
+    }
+    
+    &--edit {
+      float: left;
+    }
+  }
+}

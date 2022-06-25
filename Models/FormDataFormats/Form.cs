@@ -9,4 +9,5 @@ public class Form
     public List<ObjectData> Objects { get; set; } = new List<ObjectData>();
     public List<Customer> Customers { get; set; } = new List<Customer>();
     public List<Reservation> Reservations { get; set; } = new List<Reservation>();
+    public List<Sale> Sales { get; set; } = new List<Sale>();
 }

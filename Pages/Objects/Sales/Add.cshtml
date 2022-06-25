@@ -1,0 +1,31 @@
+@page
+@model Object_management.Pages.Objects.Sales.Add
+
+@{
+    Layout = null;
+    ViewBag.Title = "Aanbieding toevoegen";
+}
+
+<!DOCTYPE html>
+<html lang="nl">
+<partial name="_HeadPartial"/>
+<link rel="stylesheet" href="/css/sales.css">
+<body>
+<partial name="_MenuPartial"/>
+<div class="content">
+    <a href="/objects/sales" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug naar aanbiedingoverzicht</a>
+    <h1>Fietssoort toevoegen</h1>
+    <form class="content__form" method="post" action="">
+        <div class="content__form__row">
+            <label class="content__form__row__label" for="DaysToRent">Aantal dagen om te huren</label>
+            <input type="text" class="content__form__row__input" asp-for="DaysToRent">
+        </div>
+        <div class="content__form__row">
+            <label class="content__form__row__label" for="DaysToPay">Aantal te betalen dagen</label>
+            <input type="text" class="content__form__row__input" asp-for="DaysToPay">
+        </div>
+        <button type="submit" class="content__form__button button button--edit">Toevoegen</button>
+    </form>
+</div>
+</body>
+</html>

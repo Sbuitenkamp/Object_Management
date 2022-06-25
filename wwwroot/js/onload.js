@@ -1,8 +1,8 @@
 let data = {};
 let rightNow;
 
-// custom defaultSelected attribute for dropdowns because nothing can ever be easy in html
 window.onload = () => {
+    // custom defaultSelected attribute for dropdowns because nothing can ever be easy in html
     document.querySelectorAll("option").forEach(option => {
         if (!option.selected) return;
         option.setAttribute("defaultSelected", "true");
@@ -10,7 +10,7 @@ window.onload = () => {
 
     // custom input number fields
     document.querySelectorAll(`input[type="number"]`).forEach(input => {
-        console.log(input)
+        if (!document.title.includes("reservation")) return;
         input.addEventListener("input", function (e) {
             if (input.value <= 0) input.value = 0;
         });

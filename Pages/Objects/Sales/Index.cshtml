@@ -1,0 +1,52 @@
+@page
+@using Object_management.Entity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Object_management.Pages.Objects.Sales.Index
+
+@{
+    Layout = null;
+    ViewBag.Title = "Aanbiedingen";
+}
+
+<!DOCTYPE html>
+<html lang="nl">
+<partial name="_HeadPartial"/>
+<link rel="stylesheet" href="/css/sales.css">
+<body>
+<partial name="_MenuPartial"/>
+<div class="content">
+    <a href="/objects" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug naar fietsenoverzicht</a>
+    @if (Model.SalesList.Count != 0) {
+        <table class="content__table">
+            <thead class="content__table__head">
+            <tr class="content__table__head__row">
+                <th class="content__table__head__row__element">Aantal huurdagen</th>
+                <th class="content__table__head__row__element">Aantal te betalen dagen</th>
+                <th class="content__table__head__row__element"></th>
+            </tr>
+            </thead>
+            <tbody class="content__table__body">
+                @foreach (Sale sale in @Model.SalesList) {
+                    <form method="post" id="@sale.id"></form>
+                    <tr class="content__table__body__row">
+                        <td class="content__table__body__row__element">
+                            <input type="number" name="days_to_rent" form="@sale.id" value="@sale.days_to_rent">
+                        </td>
+                        <td class="content__table__body__row__element">
+                            <input type="number" name="days_to_pay" form="@sale.id" value="@sale.days_to_pay">
+                        </td>
+                        <td class="content__table__body__row__element">
+                            <button onclick="deleteSale(@sale.id, @sale.days_to_pay, @sale.days_to_rent)" class="content__table__body__row__element button button--delete"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    } else {
+        <h1 class="float">Geen aanbiedingen gevonden.</h1>
+    }
+    <button onclick="onClickUpdate('edit', 'Sale', false);" name="updateSales" class="content__update-button button button--edit">Gegevens aanpassen</button>
+    <a href="/objects/sales/add" class="button"><i class="fa-solid fa-plus"></i> Aanbieding Toevoegen</a>
+</div>
+</body>
+</html>

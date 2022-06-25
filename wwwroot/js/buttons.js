@@ -51,7 +51,7 @@ function deleteCustomer(id, name) {
         QueryType: "drop",
         Customers: [ { id }]
     };
-    post (data, "/Customers")
+    post (data, "/Customers");
 }
 
 function returnReservation(id) {
@@ -63,7 +63,7 @@ function returnReservation(id) {
         QueryType: "edit",
         Reservations: [ { reservation_number: id, returned: true, paid }]
     };
-    post (data, "/Reservations")
+    post (data, "/Reservations");
 }
 
 function deleteReservation(id) {
@@ -72,7 +72,16 @@ function deleteReservation(id) {
         QueryType: "drop",
         Reservations: [ { reservation_number: id }]
     };
-    post (data, "/Reservations")
+    post (data, "/Reservations");
+}
+
+function deleteSale(id, days_to_pay, days_to_rent) {
+    if (!confirm(`Weet u zeker dat u aanbieding ${days_to_rent}-${days_to_pay} wilt verwijderen?`)) return;
+    const data = {
+        QueryType: "drop",
+        Sales: [ { id }]
+    };
+    post (data, "/objects/sales");
 }
 
 function payReservation(id) {
@@ -81,7 +90,7 @@ function payReservation(id) {
         QueryType: "edit",
         Reservations: [ { reservation_number: id, paid: true, returned: false }]
     };
-    post (data, "/Reservations")
+    post (data, "/Reservations");
 }
 
 function unReserveObject(id, resId, name) {
@@ -93,7 +102,7 @@ function unReserveObject(id, resId, name) {
             Objects: [ { Type: { id } }]
         }]
     };
-    post (data, "/Reservations")
+    post (data, "/Reservations");
 }
 
 function addWeek(reverse) {
@@ -117,7 +126,7 @@ function post(data, url, redirect) {
     http.send(JSON.stringify(data));
     http.onload = () => {
         if (redirect) return window.location.replace(redirect);
-        window.location.reload();
+        // window.location.reload();
     }
 }
 

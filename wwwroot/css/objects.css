@@ -9,7 +9,8 @@
 body {
   background-color: #f8f8f8;
   height: 100vh;
-  width: 100vw; }
+  width: 100vw;
+  overflow-x: hidden; }
 
 .button {
   display: block;
@@ -56,18 +57,24 @@ body {
   .breadcrumb:hover {
     color: #bcdef5; }
 
+td input[type="number"], td input[type="text"] {
+  border-bottom: none;
+  border-top: none; }
+
 input[type="text"], input[type="number"], textarea {
-  background-color: #e6e6e6;
+  border: solid #e6e6e6 2pt;
+  border-radius: 5px;
   padding: 2% 2%;
   resize: none; }
   input[type="text"]:hover, input[type="number"]:hover, textarea:hover {
     cursor: text; }
   input[type="text"]:disabled, input[type="number"]:disabled, textarea:disabled {
-    background-color: transparent; }
+    background-color: transparent;
+    border: none; }
     input[type="text"]:disabled:hover, input[type="number"]:disabled:hover, textarea:disabled:hover {
       cursor: default; }
 
-input[type="number"] {
+input[type="number"]:not(.input-text) {
   width: 10%; }
 
 input[type="checkbox"][disabled]:checked {
@@ -151,11 +158,14 @@ th {
 
 .button {
   float: right; }
-  .button:not(.button--delete) {
+  .button:not(.button--delete, .button--sales) {
     padding: 1% 2%;
     margin: 1% 0; }
   .button--edit, .button--delete {
     float: left; }
+  .button--sales {
+    padding: 1% 5%;
+    margin: 0 -15% 0 0; }
 
 .content__table__body__row__element:nth-child(2) {
   min-width: 20%; }

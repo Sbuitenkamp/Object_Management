@@ -4,7 +4,7 @@ using Object_management.Models;
 
 namespace Object_management.Repositories;
 
-public class ObjectRepository: Repository
+public class ObjectRepository : Repository
 {
     public int CreateObject(ObjectData objectData)
     {

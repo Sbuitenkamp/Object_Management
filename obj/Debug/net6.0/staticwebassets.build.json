@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "zL9PGEl2RHOorbfwp5aJrdQVOermzG0KpyUPge+9ga0=",
+  "Hash": "ZTBy5CYM4Qfz6uvhpRc77JczMhL/ZuN7ptRMZdRkx5M=",
   "Source": "Object_management",
   "BasePath": "_content/Object_management",
   "Mode": "Default",
@@ -219,6 +219,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/css/reservations.css.map"
+    },
+    {
+      "Identity": "/home/sbuitenkamp/Business/Object_Management/wwwroot/css/sales.css",
+      "SourceId": "Object_management",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/sbuitenkamp/Business/Object_Management/wwwroot/",
+      "BasePath": "_content/Object_management",
+      "RelativePath": "css/sales.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/css/sales.css"
+    },
+    {
+      "Identity": "/home/sbuitenkamp/Business/Object_Management/wwwroot/css/sales.css.map",
+      "SourceId": "Object_management",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/sbuitenkamp/Business/Object_Management/wwwroot/",
+      "BasePath": "_content/Object_management",
+      "RelativePath": "css/sales.css.map",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/css/sales.css.map"
     },
     {
       "Identity": "/home/sbuitenkamp/Business/Object_Management/wwwroot/css/site.css",
