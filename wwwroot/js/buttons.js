@@ -125,8 +125,23 @@ function post(data, url, redirect) {
     http.setRequestHeader("RequestVerificationToken", document.querySelector(`input[name="__RequestVerificationToken"]`).value);
     http.send(JSON.stringify(data));
     http.onload = () => {
-        if (redirect) return window.location.replace(redirect);
-        // window.location.reload();
+        const result = JSON.parse(http.responseText);
+        if (result) {
+            let textField;
+            if (result.success) {
+                textField = document.querySelector("h1.confirmation");
+                textField.innerHTML = result.success;
+                textField.classList.remove("confirmation--hidden");
+            } else if (result.warning) {
+                textField = document.querySelector("h1.warning");
+                textField.innerHTML = result.warning;
+                textField.classList.remove("warning--hidden");
+                textField.classList.add("warning--activated");
+            }
+        } else {
+            if (redirect) return window.location.replace(redirect);
+            window.location.reload();
+        }
     }
 }
 

@@ -77,7 +77,11 @@
   }
   
   &__form {
-    &__row {}
+    &__row {
+      input[type="date"] {
+        width: 65%;
+      }
+    }
   }
 }
 

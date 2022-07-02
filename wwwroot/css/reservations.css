@@ -41,6 +41,8 @@
           padding: 5%; }
     .content__table__body--hidden__customer-table {
       border-spacing: 1rem .3rem; }
+.content__form__row input[type="date"] {
+  width: 65%; }
 
 [data-toggle="toggle"] {
   display: none; }

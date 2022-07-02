@@ -113,24 +113,41 @@
 }
 
 .confirmation {
-  min-width: 40%;
+  min-width: 99%;
+  float: left;
   background-color: $confirmed;
   padding: 1%;
   border: solid darken($confirmed, 20%) 1px;
-  display: none;
+  
+  &--hidden {
+    display: none;
+  }
 }
 
 .warning { 
-  min-width: 40%;
+  min-width: 99%;
+  float: left;
   background-color: $warning;
   padding: 1%;
   border: solid darken($warning, 20%) 1px;
-  display: none;
+  transition: all .5s ease;
+  -webkit-transition: all .5s ease;
+
+  &--hidden {
+    display: none;
+  }
   
-  &--visible {
+  &--activated {
+    animation: scale-display .5s;
     display: block;
   }
   
+  &--deactivated {
+    animation: scale-display--reversed .5s;
+    animation-fill-mode:forwards;
+    display: none;
+  }
+
   &--tr {
     display: table-row;
   }

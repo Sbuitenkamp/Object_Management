@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Object_management.Entity;
+using Object_management.Models;
 using Object_management.Models.FormDataFormats;
 using Object_management.Repositories;
 
@@ -38,17 +39,54 @@ public class Index : PageModel
         }
     }
 
-    public void OnPost([FromBody] Form formData)
+    public JsonResult OnPost([FromBody] Form formData)
     {
         if (formData.Customers.Count != 0) {
+            string resultMessage = string.Empty;
+            int result = 0;
+            object returnData;
             switch (formData.QueryType) {
                 case "edit":
-                    CustomerRepo.Update(formData.Customers);
-                    break;
+                    string validationMsg = FormValidator.ValidateCustomer(formData.Customers.First());
+                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+
+                    result = CustomerRepo.Update(formData.Customers);
+                    switch (result) {
+                        case < 0:
+                            resultMessage = "Er is een fout opgetreden tijdens het bijwerken.";
+                            break;
+                        case 0:
+                            resultMessage = "Geen rijen bijgewerkt.";
+                            break;
+                        default:
+                            resultMessage = $"{result} rij(en) bijgewerkt.";
+                            break;
+                    }
+
+                    if (result <= 0) returnData = new { warning = resultMessage };
+                    else returnData = new { success = resultMessage };
+
+                    return new JsonResult(returnData);
                 case "drop":
-                    CustomerRepo.Delete(formData.Customers[0].id);
-                    break;
+                    result = CustomerRepo.Delete(formData.Customers[0].id);
+                    switch (result) {
+                        case < 0:
+                            resultMessage = "Er is een fout opgetreden tijdens het bijwerken.";
+                            break;
+                        case 0:
+                            resultMessage = "Geen rijen bijgewerkt.";
+                            break;
+                        default:
+                            resultMessage = $"{result} rij(en) bijgewerkt.";
+                            break;
+                    }
+
+                    if (result <= 0) returnData = new { warning = resultMessage };
+                    else returnData = new { success = resultMessage };
+
+                    return new JsonResult(returnData);
             }
         }
+        return new JsonResult(new { warning = "Customers is empty exception" });
     }
 }

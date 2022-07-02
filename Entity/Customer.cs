@@ -6,5 +6,5 @@ public class Customer
     public string name { get; set; }
     public string adres { get; set; }
     public string email { get; set; }
-    public int telephone { get; set; }
+    public string telephone { get; set; }
 }

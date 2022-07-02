@@ -39,7 +39,7 @@ function markForms(isHidden) {
         if (parentForm.getAttribute("changed") === "true") return; // skip already marked forms
         if (inputField.tagName.toLowerCase() === "input") {
             // check if the value on load matches with the current value
-            if ((inputField.type === "text" && inputField.value !== inputField.defaultValue) || (inputField.type === "checkbox" && inputField.checked !== inputField.defaultChecked)) parentForm.setAttribute("changed", "true");
+            if (((inputField.type === "text" || inputField.type === "number") && inputField.value !== inputField.defaultValue) || (inputField.type === "checkbox" && inputField.checked !== inputField.defaultChecked)) parentForm.setAttribute("changed", "true");
         } else if (inputField.tagName.toLowerCase() === "option") {
             // same as above but for option fields
             if (!inputField.selected) return;
@@ -63,8 +63,9 @@ function parseForms(table) {
             let value;
             if (field.tagName.toLowerCase() === "input") { // handle input
                 if (field.type === "checkbox") value = field.checked;
+                else if (field.type === "number") value = parseInt(field.value);
                 else if (field.type === "text") {
-                    if (/\d/.test(field.value) && field.name !== "adres") { // parse numbers
+                    if (/\d/.test(field.value) && !["adres", "telephone"].includes(field.name)) { // parse numbers
                         if (field.value.includes('.')) value = parseFloat(field.value);
                         else value = parseInt(field.value);
                     } else value = field.value;

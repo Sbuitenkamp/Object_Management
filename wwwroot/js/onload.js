@@ -8,9 +8,8 @@ window.onload = () => {
         option.setAttribute("defaultSelected", "true");
     });
 
-    // custom input number fields
+    // custom input number fields to prevent negative numbers
     document.querySelectorAll(`input[type="number"]`).forEach(input => {
-        if (!document.title.includes("reservation")) return;
         input.addEventListener("input", function (e) {
             if (input.value <= 0) input.value = 0;
         });
