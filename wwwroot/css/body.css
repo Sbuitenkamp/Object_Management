@@ -202,7 +202,16 @@ th {
   float: left;
   background-color: #7EED94;
   padding: 1%;
-  border: solid #24e14a 1px; }
+  border: solid #24e14a 1px;
+  transition: all .5s ease;
+  -webkit-transition: all .5s ease; }
+  .confirmation--activated {
+    animation: scale-display .5s; }
+  .confirmation--deactivated {
+    animation: scale-display--reversed .5s;
+    animation-fill-mode: forwards; }
+  .confirmation--visible {
+    display: block; }
   .confirmation--hidden {
     display: none; }
 

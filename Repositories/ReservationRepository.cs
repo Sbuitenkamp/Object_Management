@@ -16,7 +16,7 @@ public class ReservationRepository : Repository
             string typeQuery = "INSERT INTO is_reserved_at (reservation_number, object_type_id, amount) VALUES (@reservation_number, @object_type_id, @amount);";
 
             // create reservation and add the new id to the existing object
-            int newId = Connection.QuerySingle<int>(reservationQuery, new 
+            int newId = Connection.Execute(reservationQuery, new 
             {
                 customer_id = reservationToCreate.CustomerData.id,
                 start_date = reservationToCreate.start_date.Date, 
@@ -54,17 +54,18 @@ public class ReservationRepository : Repository
             // relational queries
             foreach (ObjectData objectData in reservationToLock.Objects) {
                 for (int i = 0; i < (reservationToLock.return_date - reservationToLock.start_date).TotalDays; i++) {
-                    rowCount += Connection.ExecuteScalar<int>(dateQuery, new { objectData.object_number, day = reservationToLock.start_date.AddDays(i), reservation_number = reservationToLock.reservation_number });
+                    rowCount += Connection.Execute(dateQuery, new { objectData.object_number, day = reservationToLock.start_date.AddDays(i), reservation_number = reservationToLock.reservation_number });
                 }
             }
-
-            return rowCount;
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
             CloseConnection();
         }
+        
+        return rowCount;
     }
 
     public Reservation SelectReservation(int reservationId)
@@ -461,7 +462,7 @@ public class ReservationRepository : Repository
             Reservation reservation = Connection.Query<Reservation>("SELECT reservation_number, start_date, return_date FROM Reservation WHERE reservation_number = @resId LIMIT 1;", new { resId = reservationNumber }).First();
             foreach (ObjectData obj in objectsToGiveOut) {
                 for (int i = 0; i < (reservation.return_date - reservation.start_date).TotalDays; i++) {
-                    rowCount = Connection.ExecuteScalar<int>("INSERT INTO ReservationDate (object_number, reservation_number, `day`) VALUES (@object_number, @reservation_number, @day)", new 
+                    rowCount = Connection.Execute("INSERT INTO ReservationDate (object_number, reservation_number, `day`) VALUES (@object_number, @reservation_number, @day)", new 
                     {
                         reservation.reservation_number,
                         obj.object_number,
@@ -469,15 +470,17 @@ public class ReservationRepository : Repository
                     });
                 }
             }
-            rowCount += Connection.ExecuteScalar<int>("DELETE FROM is_reserved_at WHERE reservation_number = @resId", new { resId = reservationNumber });
+            rowCount += Connection.Execute("DELETE FROM is_reserved_at WHERE reservation_number = @resId", new { resId = reservationNumber });
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
             CloseConnection();
         }
 
-        return rowCount;    }
+        return rowCount;    
+    }
 
     public int UpdateReservation(List<Reservation> reservationsToUpdate)
     {
@@ -485,10 +488,11 @@ public class ReservationRepository : Repository
         try {
             Connect();
             foreach (Reservation reservation in reservationsToUpdate) {
-                rowCount += Connection.ExecuteScalar<int>("UPDATE Reservation SET paid = @paid, returned = @returned WHERE reservation_number = @reservationNr", new { reservation.paid, reservation.returned, reservationNr = reservation.reservation_number });
+                rowCount += Connection.Execute("UPDATE Reservation SET paid = @paid, returned = @returned WHERE reservation_number = @reservationNr", new { reservation.paid, reservation.returned, reservationNr = reservation.reservation_number });
                 // todo: change objects
             }
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
@@ -503,7 +507,7 @@ public class ReservationRepository : Repository
         int rowCount = 0;
         try {
             Connect();
-            rowCount += Connection.ExecuteScalar<int>(@"
+            rowCount += Connection.Execute(@"
                 DELETE FROM is_reserved_at WHERE reservation_number = @reservationNr;
                 DELETE FROM ReservationDate WHERE reservation_number = @reservationNr;
                 DELETE FROM Reservation WHERE reservation_number = @reservationNr;
@@ -512,6 +516,7 @@ public class ReservationRepository : Repository
             Console.WriteLine(e);
             throw;
         } finally {
+            rowCount = -1;
             CloseConnection();
         }
         
@@ -523,8 +528,9 @@ public class ReservationRepository : Repository
         int rowCount = 0;
         try {
             Connect();
-            rowCount += Connection.ExecuteScalar<int>("DELETE FROM is_reserved_at WHERE reservation_number = @reservationNr AND object_type_id = @objNr;", new { reservationNr = reservation.reservation_number, objNr = reservation.Objects[0].Type.id });
+            rowCount += Connection.Execute("DELETE FROM is_reserved_at WHERE reservation_number = @reservationNr AND object_type_id = @objNr;", new { reservationNr = reservation.reservation_number, objNr = reservation.Objects[0].Type.id });
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {

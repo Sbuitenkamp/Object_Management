@@ -67,4 +67,27 @@ public static class FormValidator
         
         return true;
     }
+
+    public static object GenerateResultObject(int result)
+    {
+        object returnData;
+        string resultMessage = string.Empty;
+        
+        switch (result) {
+            case < 0:
+                resultMessage = "Kon gegevens niet bijwerken.";
+                break;
+            case 0:
+                resultMessage = "Er zijn geen gegevens aangepast.";
+                break;
+            default:
+                resultMessage = $"Gegevens successvol aangepast.";
+                break;
+        }
+                
+        if (result <= 0) returnData = new { warning = resultMessage };
+        else returnData = new { success = resultMessage };
+
+        return returnData;
+    }
 }

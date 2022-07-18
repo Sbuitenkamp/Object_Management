@@ -13,7 +13,6 @@ function onClickGiveOut(resId) {
         data.Reservations[0].Objects.push(value);
     });
     
-    console.log(data);
     post(data, window.location.href, "/reservations");
 }
 

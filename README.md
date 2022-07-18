@@ -1,10 +1,6 @@
 # Object_Management
 
 TODO:
-- ### User feedback
-  - almost done on customer page
-  - fix 0 return on scalar bug
-  - implement on all pages afterwards
 - ### Misc
   - -1 and +1 bikes for reservation
   - Search on all pages

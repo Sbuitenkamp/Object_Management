@@ -118,6 +118,21 @@
   background-color: $confirmed;
   padding: 1%;
   border: solid darken($confirmed, 20%) 1px;
+  transition: all .5s ease;
+  -webkit-transition: all .5s ease;
+
+  &--activated {
+    animation: scale-display .5s;
+  }
+
+  &--deactivated {
+    animation: scale-display--reversed .5s;
+    animation-fill-mode: forwards;
+  }
+  
+  &--visible {
+    display: block;
+  }
   
   &--hidden {
     display: none;

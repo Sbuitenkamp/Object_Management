@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Object_management.Entity;
+using Object_management.Models;
 using Object_management.Models.FormDataFormats;
 using Object_management.Repositories;
 
@@ -15,7 +16,7 @@ public class Index : PageModel
     public string Sort = string.Empty;
     public string SortTable = string.Empty;
     public bool SortDesc = false;
-    
+
     public void OnGet(string? sort, bool? desc, string? table, DateTime? day)
     {
         ReservedReservations = ReservationRepo.SelectReservedReservations();
@@ -37,7 +38,8 @@ public class Index : PageModel
                 "paid" => SortDesc ? ReservedReservations.OrderByDescending(x => x.paid).ToList() : ReservedReservations.OrderBy(x => x.paid).ToList(),
                 _ => ReservedReservations
             };
-        } 
+        }
+
         if (table == "givenOut") {
             GivenOutReservations = Sort switch {
                 "reservationNumber" => SortDesc ? GivenOutReservations.OrderByDescending(x => x.reservation_number).ToList() : GivenOutReservations.OrderBy(x => x.reservation_number).ToList(),
@@ -51,38 +53,32 @@ public class Index : PageModel
             };
         }
     }
-    
+
     public IActionResult OnPost([FromBody] Form formData)
     {
-        int rowCount = 0;
-        string message;
-        bool warning = false;
+        int result = 0;
+        string validationMsg = string.Empty;
 
         if (formData.Reservations.Count != 0) {
             switch (formData.QueryType) {
                 case "edit":
-                    rowCount = ReservationRepo.UpdateReservation(formData.Reservations);
-                    break;
+                    validationMsg = FormValidator.ValidateObject(formData.Objects.First());
+                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+
+                    result = ReservationRepo.UpdateReservation(formData.Reservations);
+                    return new JsonResult(FormValidator.GenerateResultObject(result));
                 case "drop":
-                    if (formData.Reservations[0].Objects.Count != 0) rowCount += ReservationRepo.DeleteReservedObject(formData.Reservations[0]);
-                    else rowCount = ReservationRepo.DeleteReservation(formData.Reservations[0].reservation_number);
-                    break;
+                    validationMsg = FormValidator.ValidateObject(formData.Objects.First());
+                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+
+                    // different handling depending on whether the reservation has been given out
+                    result = formData.Reservations[0].Objects.Count != 0 ? ReservationRepo.DeleteReservedObject(formData.Reservations[0]) : ReservationRepo.DeleteReservation(formData.Reservations[0].reservation_number);
+                    return new JsonResult(FormValidator.GenerateResultObject(result));
             }
+
+            return new JsonResult(new { warning = "Querytype is empty exception" });
         }
 
-        switch (rowCount) {
-            case < 0:
-                message = "Deze fietssoort is toegewezen aan een fiets en is mogelijk nog gereserveert!";
-                warning = true;
-                break;
-            case 0:
-                message  = "Aanpassen niet gelukt.";
-                warning = true;
-                break;
-            default:
-                message  = rowCount + " records successvol aangepast.";
-                break;
-        }
-        
-        return new JsonResult(new { rowCount, message, warning });
-    }}
+        return new JsonResult(new { warning = "Data is empty exception" });
+    }
+}

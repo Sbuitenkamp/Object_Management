@@ -9,9 +9,9 @@ namespace Object_management.Pages.Customers;
 
 public class Index : PageModel
 {
-    public List<Customer> Customers { get; set; } = new List<Customer>();
     private CustomerRepository CustomerRepo = new CustomerRepository();
     
+    public List<Customer> Customers { get; set; } = new List<Customer>();
     public string Sort = string.Empty;
     public bool SortDesc = false;
     public void OnGet(string? sort, bool? desc)
@@ -41,52 +41,24 @@ public class Index : PageModel
 
     public JsonResult OnPost([FromBody] Form formData)
     {
-        if (formData.Customers.Count != 0) {
-            string resultMessage = string.Empty;
-            int result = 0;
-            object returnData;
-            switch (formData.QueryType) {
-                case "edit":
-                    string validationMsg = FormValidator.ValidateCustomer(formData.Customers.First());
-                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+        if (formData.Customers.Count == 0) return new JsonResult(new { warning = "Customers is empty exception" });
+        int result = 0;
+        string validationMsg = string.Empty;
+        
+        switch (formData.QueryType) {
+            case "edit":
+                validationMsg = FormValidator.ValidateCustomer(formData.Customers.First());
+                if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 
-                    result = CustomerRepo.Update(formData.Customers);
-                    switch (result) {
-                        case < 0:
-                            resultMessage = "Er is een fout opgetreden tijdens het bijwerken.";
-                            break;
-                        case 0:
-                            resultMessage = "Geen rijen bijgewerkt.";
-                            break;
-                        default:
-                            resultMessage = $"{result} rij(en) bijgewerkt.";
-                            break;
-                    }
+                result = CustomerRepo.Update(formData.Customers);
+                return new JsonResult(FormValidator.GenerateResultObject(result));
+            case "drop":
+                validationMsg = FormValidator.ValidateCustomer(formData.Customers.First());
+                if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 
-                    if (result <= 0) returnData = new { warning = resultMessage };
-                    else returnData = new { success = resultMessage };
-
-                    return new JsonResult(returnData);
-                case "drop":
-                    result = CustomerRepo.Delete(formData.Customers[0].id);
-                    switch (result) {
-                        case < 0:
-                            resultMessage = "Er is een fout opgetreden tijdens het bijwerken.";
-                            break;
-                        case 0:
-                            resultMessage = "Geen rijen bijgewerkt.";
-                            break;
-                        default:
-                            resultMessage = $"{result} rij(en) bijgewerkt.";
-                            break;
-                    }
-
-                    if (result <= 0) returnData = new { warning = resultMessage };
-                    else returnData = new { success = resultMessage };
-
-                    return new JsonResult(returnData);
-            }
+                result = CustomerRepo.Delete(formData.Customers[0].id);
+                return new JsonResult(FormValidator.GenerateResultObject(result));
         }
-        return new JsonResult(new { warning = "Customers is empty exception" });
+        return new JsonResult(new { warning = "Querytype is empty exception" });
     }
 }

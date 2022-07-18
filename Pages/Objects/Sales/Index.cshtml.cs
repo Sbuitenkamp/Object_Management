@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Object_management.Entity;
+using Object_management.Models;
 using Object_management.Models.FormDataFormats;
 using Object_management.Repositories;
 
@@ -17,16 +18,26 @@ public class Index : PageModel
         SalesList = SaleRepo.GetSales();
     }
 
-    public void OnPost([FromBody] Form formData)
+    public JsonResult OnPost([FromBody] Form formData)
     {
-        if (formData.Sales.Count == 0) return;
+        if (formData.Sales.Count == 0) return new JsonResult(new { warning = "Customers is empty exception" });
+        int result = 0;
+        string validationMsg = string.Empty;
+        
         switch (formData.QueryType) {
             case "edit":
-                SaleRepo.UpdateSales(formData.Sales);
-                break;
+                validationMsg = FormValidator.ValidateSale(formData.Sales.First());
+                if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+                
+                result = SaleRepo.UpdateSales(formData.Sales);
+                return new JsonResult(FormValidator.GenerateResultObject(result));
             case "drop":
-                SaleRepo.DeleteSale(formData.Sales.First());
-                break;
+                validationMsg = FormValidator.ValidateSale(formData.Sales.First());
+                if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+                
+                result = SaleRepo.DeleteSale(formData.Sales.First());
+                return new JsonResult(FormValidator.GenerateResultObject(result));
         }
+        return new JsonResult(new { warning = "Querytype is empty exception" });
     }
 }

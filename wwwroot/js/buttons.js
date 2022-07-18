@@ -125,24 +125,45 @@ function post(data, url, redirect) {
     http.setRequestHeader("RequestVerificationToken", document.querySelector(`input[name="__RequestVerificationToken"]`).value);
     http.send(JSON.stringify(data));
     http.onload = () => {
+        let ready = true;
         const result = JSON.parse(http.responseText);
         if (result) {
-            let textField;
-            if (result.success) {
-                textField = document.querySelector("h1.confirmation");
-                textField.innerHTML = result.success;
-                textField.classList.remove("confirmation--hidden");
-            } else if (result.warning) {
-                textField = document.querySelector("h1.warning");
-                textField.innerHTML = result.warning;
-                textField.classList.remove("warning--hidden");
-                textField.classList.add("warning--activated");
+            const type = result.success ? "confirmation" : "warning"; // set the type for dynamic class injection
+            const negType = result.success ? "warning" : "confirmation";
+            const textField = document.querySelector(`h1.${type}`);
+            const negField = document.querySelector(`h1.${negType}`);
+            if (textField.classList.contains(`${type}--activated`)) {
+                textField.classList.remove(`${type}--activated`);
+                textField.classList.add(`${type}--deactivated`);
+                ready = false;
             }
+            new Promise ((resolve) => {
+                if (ready) return resolve();
+                setTimeout(() => {
+                    textField.classList.add(`${type}--hidden`);
+                    ready = true;
+                    resolve();
+                }, 300);
+            }).then(() => setTimeout(() => message(textField, result.success ?? result.warning, type, negType, negField), 100)); // small unnoticeable timeout to make a second edit without refreshing show up too
         } else {
             if (redirect) return window.location.replace(redirect);
             window.location.reload();
         }
     }
+}
+
+// resultmsg function
+function message(textField, msg, type, negType, negField) {
+    if (type === "warning") msg = `Er is een fout opgetreden: "${msg}" Probeer het later nog eens. Contacteer uw administrator als dit blijft gebeuren.`;
+    if (negField.classList.contains(`${negType}--activated`)) { // remove error
+        negField.classList.remove(`${negType}--activated`);
+        negField.classList.add(`${negType}--deactivated`);
+        setTimeout(() => negField.classList.add(`${negType}--hidden`), 300);
+    }
+    textField.innerHTML = msg;
+    textField.classList.remove(`${type}--hidden`);
+    textField.classList.remove(`${type}--deactivated`);
+    textField.classList.add(`${type}--activated`);
 }
 
 // date methods

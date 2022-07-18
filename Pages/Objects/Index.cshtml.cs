@@ -46,46 +46,49 @@ public class Index : PageModel
     
     public IActionResult OnPost([FromBody] Form formData)
     {
-        int rowCount = 0;
-        string message;
-        bool warning = false;
-
         if (formData.ObjectTypes.Count != 0) {
+            int result = 0;
+            string validationMsg = string.Empty;
+
             switch (formData.QueryType) {
                 case "edit":
-                    rowCount = ObjectRepo.UpdateObjectType(formData.ObjectTypes);
-                    break;
+                    validationMsg = FormValidator.ValidateObjectType(formData.ObjectTypes.First());
+                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+
+                    result = ObjectRepo.UpdateObjectType(formData.ObjectTypes);
+                    return new JsonResult(FormValidator.GenerateResultObject(result));
                 case "drop":
-                    rowCount = ObjectRepo.DeleteObjectType(formData.ObjectTypes[0].id);
-                    break;
+                    validationMsg = FormValidator.ValidateObjectType(formData.ObjectTypes.First());
+                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+                    
+                    result = ObjectRepo.DeleteObjectType(formData.ObjectTypes[0].id);
+                    return new JsonResult(FormValidator.GenerateResultObject(result));
             }
+
+            return new JsonResult(new { warning = "Querytype is empty exception" });
         }
 
         if (formData.Objects.Count != 0) {
+            int result = 0;
+            string validationMsg = string.Empty;
+                
             switch (formData.QueryType) {
                 case "edit":
-                    rowCount = ObjectRepo.UpdateObject(formData.Objects);
-                    break;
+                    validationMsg = FormValidator.ValidateObject(formData.Objects.First());
+                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+
+                    result = ObjectRepo.UpdateObject(formData.Objects);
+                    return new JsonResult(FormValidator.GenerateResultObject(result));
                 case "drop":
-                    rowCount = ObjectRepo.DeleteObject(formData.Objects[0].object_number);
-                    break;
+                    validationMsg = FormValidator.ValidateObject(formData.Objects.First());
+                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+
+                    result = ObjectRepo.DeleteObject(formData.Objects[0].object_number);
+                    return new JsonResult(FormValidator.GenerateResultObject(result));
             }
+            return new JsonResult(new { warning = "Querytype is empty exception" });
         }
 
-        switch (rowCount) {
-            case < 0:
-                message = "Deze fietssoort is toegewezen aan een fiets en is mogelijk nog gereserveert!";
-                warning = true;
-                break;
-            case 0:
-                message  = "Aanpassen niet gelukt.";
-                warning = true;
-                break;
-            default:
-                message  = rowCount + " records successvol aangepast.";
-                break;
-        }
-        
-        return new JsonResult(new { rowCount, message, warning });
+        return new JsonResult(new { warning = "Data is empty exception" });
     }
 }

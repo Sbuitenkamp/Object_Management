@@ -7,15 +7,19 @@ public class SaleRepository : Repository
 {
     public int AddSale(Sale saleToAdd)
     {
+        int rowCount = 0;
         try {
             Connect();
-            return Connection.ExecuteScalar<int>("INSERT INTO Sale (days_to_rent, days_to_pay) VALUES (@days_to_rent, @days_to_pay);", new { saleToAdd.days_to_rent, saleToAdd.days_to_pay });
+            rowCount += Connection.Execute("INSERT INTO Sale (days_to_rent, days_to_pay) VALUES (@days_to_rent, @days_to_pay);", new { saleToAdd.days_to_rent, saleToAdd.days_to_pay });
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
             CloseConnection();
         }
+
+        return rowCount;
     }
     
     public List<Sale> GetSales()
@@ -36,14 +40,16 @@ public class SaleRepository : Repository
         int rowCount = 0;
         try {
             Connect();
-            foreach (Sale sale in salesToUpdate) rowCount += Connection.ExecuteScalar<int>("UPDATE Sale SET Sale.days_to_pay = @days_to_pay, Sale.days_to_rent = @days_to_rent WHERE Sale.id = @id;", new { sale.id, sale.days_to_pay, sale.days_to_rent });
-            return rowCount;
+            foreach (Sale sale in salesToUpdate) rowCount += Connection.Execute("UPDATE Sale SET Sale.days_to_pay = @days_to_pay, Sale.days_to_rent = @days_to_rent WHERE Sale.id = @id;", new { sale.id, sale.days_to_pay, sale.days_to_rent });
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
             CloseConnection();
         }
+        
+        return rowCount;
     }
 
     public int DeleteSale(Sale saleToDelete)
@@ -51,16 +57,18 @@ public class SaleRepository : Repository
         int rowCount = 0;
         try {
             Connect();
-            rowCount += Connection.ExecuteScalar<int>(@"
+            rowCount += Connection.Execute(@"
                 DELETE FROM is_applied_to WHERE sale_id = @id; 
                 DELETE FROM Sale WHERE Sale.id = @id;
             ", new { saleToDelete.id });
-            return rowCount;
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
             CloseConnection();
         }
+        
+        return rowCount;
     }
 }

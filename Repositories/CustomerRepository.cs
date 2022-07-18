@@ -9,7 +9,7 @@ public class CustomerRepository : Repository
     {
         try {
             Connect();
-            return Connection.QuerySingle<int>("INSERT INTO Customer (name, telephone, email, adres) VALUES (@name, @telephone, @email, @adres); SELECT LAST_INSERT_ID();", new 
+            return Connection.Execute("INSERT INTO Customer (name, telephone, email, adres) VALUES (@name, @telephone, @email, @adres); SELECT LAST_INSERT_ID();", new 
             {
                 customerData.name,
                 customerData.telephone,
@@ -43,7 +43,7 @@ public class CustomerRepository : Repository
         try {
             Connect();
             foreach (Customer customer in customers) {
-                rowCount += Connection.ExecuteScalar<int>("UPDATE Customer SET name = @name, telephone = @telephone, email = @email, adres = @adres WHERE id = @id", new 
+                rowCount += Connection.Execute("UPDATE Customer SET name = @name, telephone = @telephone, email = @email, adres = @adres WHERE id = @id", new 
                 {
                     customer.id,
                     customer.name,
@@ -53,6 +53,7 @@ public class CustomerRepository : Repository
                 });
             }
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
@@ -66,7 +67,7 @@ public class CustomerRepository : Repository
     {
         try {
             Connect();
-            return Connection.ExecuteScalar<int>("DELETE FROM Customer WHERE id = @customerId", new { customerId });
+            return Connection.Execute("DELETE FROM Customer WHERE id = @customerId", new { customerId });
         } catch (Exception e) {
             Console.WriteLine(e);
             throw;

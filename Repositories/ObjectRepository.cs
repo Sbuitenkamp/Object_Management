@@ -12,8 +12,9 @@ public class ObjectRepository : Repository
 
         try {
             Connect();
-            rowCount += Connection.ExecuteScalar<int>("INSERT IGNORE INTO Object (object_number, object_type_id) VALUES (@object_number, @object_type_id)", new { objectData.object_number, objectData.object_type_id });
+            rowCount += Connection.Execute("INSERT IGNORE INTO Object (object_number, object_type_id) VALUES (@object_number, @object_type_id)", new { objectData.object_number, objectData.object_type_id });
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
@@ -29,8 +30,9 @@ public class ObjectRepository : Repository
         
         try {
             Connect();
-            rowCount += Connection.ExecuteScalar<int>("INSERT IGNORE INTO ObjectType (description, price) VALUES (@desc, @price)", new { desc = objectType.description, objectType.price });
+            rowCount += Connection.Execute("INSERT IGNORE INTO ObjectType (description, price) VALUES (@desc, @price)", new { desc = objectType.description, objectType.price });
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
@@ -127,7 +129,7 @@ public class ObjectRepository : Repository
             foreach (ObjectData objectData in objects) {
                 string query = "UPDATE Object SET object_number=@obj_number, object_type_id=@obj_type, in_service=@service, size=@size WHERE object_number=@obj_number";
 
-                rowCount += Connection.ExecuteScalar<int>(query, new
+                rowCount += Connection.Execute(query, new
                 {
                     obj_number = objectData.object_number,
                     obj_type = objectData.Type.id,
@@ -136,6 +138,7 @@ public class ObjectRepository : Repository
                 });
             }
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
@@ -153,7 +156,7 @@ public class ObjectRepository : Repository
             foreach (ObjectType type in types) {
                 string query = "UPDATE ObjectType SET id=@obj_type, description=@descr, price=@prce WHERE id=@obj_type";
 
-                rowCount += Connection.ExecuteScalar<int>(query, new 
+                rowCount += Connection.Execute(query, new 
                 {
                     obj_type = type.id,
                     descr = type.description,
@@ -163,17 +166,18 @@ public class ObjectRepository : Repository
                 foreach (Sale sale in type.Sales) {
                     string saleQuery;
                     if (sale.IsApplied) {
-                        int rows = Connection.ExecuteScalar<int>("SELECT object_type_id, sale_id AS id FROM is_applied_to WHERE object_type_id = @type_id AND sale_id = @sale_id", new { type_id = type.id, sale_id = sale.id });
+                        int rows = Connection.Execute("SELECT object_type_id, sale_id AS id FROM is_applied_to WHERE object_type_id = @type_id AND sale_id = @sale_id", new { type_id = type.id, sale_id = sale.id });
                         if (rows != 0) continue; // if the relation already exists, we skip because we don't wnat duplicate entries
                         saleQuery = "INSERT IGNORE INTO is_applied_to (sale_id, object_type_id) VALUES (@sale_id, @obj_type)";
                     } else {
                         saleQuery = "DELETE FROM is_applied_to WHERE object_type_id=@obj_type AND sale_id=@sale_id";
                     }
 
-                    rowCount += Connection.ExecuteScalar<int>(saleQuery, new { sale_id = sale.id, obj_type = type.id });
+                    rowCount += Connection.Execute(saleQuery, new { sale_id = sale.id, obj_type = type.id });
                 }
             }
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
@@ -189,8 +193,9 @@ public class ObjectRepository : Repository
 
         try {
             Connect();
-            rowCount += Connection.ExecuteScalar<int>("DELETE FROM Object WHERE object_number=@id", new { id });
+            rowCount += Connection.Execute("DELETE FROM Object WHERE object_number=@id", new { id });
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
@@ -206,8 +211,9 @@ public class ObjectRepository : Repository
 
         try {
             Connect();
-            rowCount += Connection.ExecuteScalar<int>("DELETE FROM ObjectType WHERE id=@id", new { id });
+            rowCount += Connection.Execute("DELETE FROM ObjectType WHERE id=@id", new { id });
         } catch (Exception e) {
+            rowCount = -1;
             Console.WriteLine(e);
             throw;
         } finally {
