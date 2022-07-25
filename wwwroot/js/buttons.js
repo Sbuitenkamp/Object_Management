@@ -1,3 +1,46 @@
+function sortBy(table, field, descending) {
+    const thead = document.querySelector(`thead.content__table__head`);
+    const tbody = document.querySelector(`tbody.content__table__body`);
+    data = {
+        [table]: [] // create the list for the data to update with the correct name
+    }
+    parseForms(table, true);
+    
+    if (descending) data[table].sort((a,b) => (b[field] > a[field]) ? 1 : ((a[field] > b[field] ? -1 : 0)));
+    else data[table].sort((a,b) => (a[field] > b[field]) ? 1 : ((b[field] > a[field] ? -1 : 0)));
+    
+    // backup some important functional stuff
+    const requestToken = tbody.querySelector("input[name='__RequestVerificationToken']");
+    const hidden = tbody.querySelectorAll("input[type='hidden']");
+
+    console.log(requestToken)
+    // empty table and repopulate with the important stuff
+    tbody.innerHTML = ""; 
+    tbody.appendChild(requestToken)
+    for (const hiddenInput of hidden) tbody.appendChild(hiddenInput);
+
+    // window[table] = the individual item of data[table], window[table+"Row"] = the function that returns the HTML row as defined in html-formats.js
+    for (window[table] of data[table]) tbody.innerHTML += window[table + "Row"](window[table]);
+    
+    // visual indicators
+    const button = thead.querySelector(`a[onclick="sortBy('${table}', '${field}', ${descending})"]`);
+    button.children[0].classList.remove("fa-sort");
+    button.children[0].classList.remove(descending ? "fa-sort-up" : "fa-sort-down");
+    button.children[0].classList.add(descending ? "fa-sort-down" : "fa-sort-up");
+    // flip the descending parameter
+    button.setAttribute("onclick", `sortBy('${table}', '${field}', ${!descending})`);
+}
+
+function selectMore(offset, table) {
+    const data = {
+        QueryType: "select",
+        [table + 's']: [ { } ],
+        Offset: offset
+    };
+    // TODO: Auto sort when loading in
+    post(data, window.location.href);
+}
+
 function toggleHidden(element) {
     const id = element.id.split('-')[1];
     const content = document.querySelector(`tr#reservation-body-${id}`);
@@ -128,25 +171,42 @@ function post(data, url, redirect) {
         let ready = true;
         const result = JSON.parse(http.responseText);
         if (result) {
-            const type = result.success ? "confirmation" : "warning"; // set the type for dynamic class injection
-            const negType = result.success ? "warning" : "confirmation";
-            const textField = document.querySelector(`h1.${type}`);
-            const negField = document.querySelector(`h1.${negType}`);
-            if (textField.classList.contains(`${type}--activated`)) {
-                textField.classList.remove(`${type}--activated`);
-                textField.classList.add(`${type}--deactivated`);
-                ready = false;
+            if (result.success || result.warning) {
+                const type = result.success ? "confirmation" : "warning"; // set the type for dynamic class injection
+                const negType = result.success ? "warning" : "confirmation";
+                const textField = document.querySelector(`h1.${type}`);
+                const negField = document.querySelector(`h1.${negType}`);
+                if (textField.classList.contains(`${type}--activated`)) {
+                    textField.classList.remove(`${type}--activated`);
+                    textField.classList.add(`${type}--deactivated`);
+                    ready = false;
+                }
+                new Promise((resolve) => {
+                    if (ready) return resolve();
+                    setTimeout(() => {
+                        textField.classList.add(`${type}--hidden`);
+                        ready = true;
+                        resolve();
+                    }, 300);
+                }).then(() => setTimeout(() => message(textField, result.success ?? result.warning, type, negType, negField), 100)); // small unnoticeable timeout to make a second edit without refreshing show up too
+            } else {
+                const table = document.querySelector(`tbody.content__table__body`);
+                const button = document.querySelector(`button.button--load-more`);
+                if (result.customers) {
+                    for (const customer of result.customers) table.innerHTML += customerRow(customer);
+                    button.setAttribute("onclick", `selectMore(${result.offset}, "Customer")`);
+                    offset = result.offset;
+                }
             }
-            new Promise ((resolve) => {
-                if (ready) return resolve();
-                setTimeout(() => {
-                    textField.classList.add(`${type}--hidden`);
-                    ready = true;
-                    resolve();
-                }, 300);
-            }).then(() => setTimeout(() => message(textField, result.success ?? result.warning, type, negType, negField), 100)); // small unnoticeable timeout to make a second edit without refreshing show up too
         } else {
-            if (redirect) return window.location.replace(redirect);
+            console.log(offset)
+            if (offset !== 0) {
+                let newSearch = "";
+                if (window.location.search) newSearch = window.location.search + "loadMore=" + offset;
+                else newSearch = "?loadmore=" + offset;
+                console.log(window.location.href.toString() + newSearch);
+                return window.location.replace(window.location.href.toString() + newSearch);
+            } else if (redirect) return window.location.replace(redirect);
             window.location.reload();
         }
     }
@@ -164,6 +224,12 @@ function message(textField, msg, type, negType, negField) {
     textField.classList.remove(`${type}--hidden`);
     textField.classList.remove(`${type}--deactivated`);
     textField.classList.add(`${type}--activated`);
+
+    setTimeout(() => {
+        textField.classList.remove(`${type}--activated`);
+        textField.classList.add(`${type}--deactivated`);
+        setTimeout(() => textField.classList.add(`${type}--hidden`), 300);
+    }, 5000);
 }
 
 // date methods

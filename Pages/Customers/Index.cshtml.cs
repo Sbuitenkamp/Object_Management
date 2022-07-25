@@ -16,7 +16,7 @@ public class Index : PageModel
     public bool SortDesc = false;
     public void OnGet(string? sort, bool? desc)
     {
-        Customers = CustomerRepo.SelectAllCustomers();
+        Customers = CustomerRepo.SelectAllCustomers(0);
         
         Sort = sort ?? string.Empty;
         SortDesc = desc ?? false;
@@ -41,18 +41,24 @@ public class Index : PageModel
 
     public JsonResult OnPost([FromBody] Form formData)
     {
-        if (formData.Customers.Count == 0) return new JsonResult(new { warning = "Customers is empty exception" });
         int result = 0;
         string validationMsg = string.Empty;
         
         switch (formData.QueryType) {
+            case "select":
+                if (formData.Offset == null) return new JsonResult(new { warning = "Offset is empty exception" });
+                List<Customer> res = CustomerRepo.SelectAllCustomers(formData.Offset);
+                if (res.Count == 0) return new JsonResult(new { success = "Er zijn geen klanten meer om te laden" });
+                return new JsonResult(new { customers = res, offset = formData.Offset + res.Count });
             case "edit":
+                if (formData.Customers.Count == 0) return new JsonResult(new { warning = "Customers is empty exception" });
                 validationMsg = FormValidator.ValidateCustomer(formData.Customers.First());
                 if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 
                 result = CustomerRepo.Update(formData.Customers);
                 return new JsonResult(FormValidator.GenerateResultObject(result));
             case "drop":
+                if (formData.Customers.Count == 0) return new JsonResult(new { warning = "Customers is empty exception" });
                 validationMsg = FormValidator.ValidateCustomer(formData.Customers.First());
                 if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 

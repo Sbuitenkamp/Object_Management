@@ -24,11 +24,11 @@ public class CustomerRepository : Repository
         }
     }
     
-    public List<Customer> SelectAllCustomers()
+    public List<Customer> SelectAllCustomers(int offset)
     {
         try {
             Connect();
-            return Connection.Query<Customer>("SELECT * FROM Customer").ToList();
+            return Connection.Query<Customer>("SELECT * FROM Customer LIMIT @offset, 3", new { offset }).ToList();
         } catch (Exception e) {
             Console.WriteLine(e);
             throw;

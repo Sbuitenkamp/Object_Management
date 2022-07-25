@@ -48,10 +48,13 @@ function markForms(isHidden) {
 }
 
 // turn all changed forms to an object
-function parseForms(table) {
+function parseForms(table, noNeedForChange) {
     let counter = 0;
-    // get all the changed forms
-    document.querySelectorAll(`form[changed="true"]`).forEach(form => {
+    let forms;
+    // get all the (changed) forms
+    if (noNeedForChange) forms = document.querySelectorAll("form");
+    else forms = document.querySelectorAll(`form[changed="true"]`);
+    forms.forEach(form => {
         // initialize some data with special treatment for 2 tables
         if (table === "Objects") data[table][counter] = { object_number: parseInt(form.id) };
         else if (table === "Reservations") data[table][counter] = { reservation_number: parseInt(form.id) };

@@ -54,6 +54,28 @@ body {
     }
   }
   
+  &--load-more {
+    background: transparent;
+    color: $black;
+    padding: 1% 1.5%;
+    margin: 0 auto;
+    transition: .3s all;
+
+    i {
+      transition: inherit;
+    }
+    
+    &:hover {
+      background: transparent;
+      color: darken($grey, 30%);
+      
+      i {
+        color: darken($grey, 30%);
+        padding: 5% 0;
+      }
+    }
+  }
+  
   &--date {
     padding: .5% 1.5%;
   }

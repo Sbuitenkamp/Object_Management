@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ZTBy5CYM4Qfz6uvhpRc77JczMhL/ZuN7ptRMZdRkx5M=",
+  "Hash": "wYkptk6Mwvmts4dFt3/w3iHKrzVSib76MZpO/Ex6Vz8=",
   "Source": "Object_management",
   "BasePath": "_content/Object_management",
   "Mode": "Default",
@@ -321,6 +321,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/js/forms.js"
+    },
+    {
+      "Identity": "/home/sbuitenkamp/Business/Object_Management/wwwroot/js/html-formats.js",
+      "SourceId": "Object_management",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/sbuitenkamp/Business/Object_Management/wwwroot/",
+      "BasePath": "_content/Object_management",
+      "RelativePath": "js/html-formats.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/html-formats.js"
     },
     {
       "Identity": "/home/sbuitenkamp/Business/Object_Management/wwwroot/js/onload.js",

@@ -1,5 +1,6 @@
 @page
 @using Object_management.Entity
+@using Microsoft.AspNetCore.Http.Extensions
 @model Object_management.Pages.Customers.Index
 
 @{
@@ -21,11 +22,8 @@
             <thead class="content__table__head">
             <tr class="content__table__head__row">
                 <th class="content__table__head__row__element">
-                    @if (Model.Sort == "name" && !Model.SortDesc) {
-                        <a class="sort-button" href="?sort=name&desc=true">Naam <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?sort=name">Naam <i class="fa-solid @(Model.Sort == "name" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                        @* <a class="sort-button" href="#" onclick="sortBy(`customer`, `name`)">Naam <i class="fa-solid fa-sort-down"></i></a>  "fa-sort-up"*@
+                    <a class="sort-button" href="#" onclick="sortBy('customer', 'name', true)">Naam <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
                     @if (Model.Sort == "telephone" && !Model.SortDesc) {
@@ -76,13 +74,16 @@
                     </td>
                 </tr>
             }
-        </tbody>
+            </tbody>
         </table>
         <button onclick="onClickUpdate('edit', 'Customer', false);" name="updateCustomers" class="content__update-button button">Gegevens aanpassen</button>
     } else {
         <h1 class="float">Geen klanten gevonden.</h1>
     }
     <a href="/customers/add" class="content__add-obj-button button"><i class="fa-solid fa-plus"></i> Klant toevoegen</a>
+    @if (Model.Customers.Count == 3) {
+        <button class="button button--load-more" onclick="selectMore(3, `Customer`)">Meer resultaten weergeven <br> <i class="fa-solid fa-arrow-down"></i></button>
+    }
 </div>
 </body>
 </html>

@@ -29,6 +29,20 @@ body {
     padding: 5%; }
     .button--delete:hover {
       background-color: #EE8181; }
+  .button--load-more {
+    background: transparent;
+    color: #000000;
+    padding: 1% 1.5%;
+    margin: 0 auto;
+    transition: .3s all; }
+    .button--load-more i {
+      transition: inherit; }
+    .button--load-more:hover {
+      background: transparent;
+      color: #999999; }
+      .button--load-more:hover i {
+        color: #999999;
+        padding: 5% 0; }
   .button--date {
     padding: .5% 1.5%; }
 

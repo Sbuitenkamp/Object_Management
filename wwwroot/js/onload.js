@@ -1,5 +1,6 @@
 let data = {};
 let rightNow;
+let offset = 0;
 
 window.onload = () => {
     // custom defaultSelected attribute for dropdowns because nothing can ever be easy in html

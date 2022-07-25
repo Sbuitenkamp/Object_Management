@@ -28,7 +28,7 @@ public class Add : PageModel
 
     public void OnGet(int? newId, int? newCustomerId)
     {
-        Customers = CustomerRepo.SelectAllCustomers();
+        Customers = CustomerRepo.SelectAllCustomers(0);
         ObjectTypes = ObjectRepo.SelectObjectTypes();
 
         if (newId != null) NewReservation = ReservationRepo.SelectReservation((int) newId);
