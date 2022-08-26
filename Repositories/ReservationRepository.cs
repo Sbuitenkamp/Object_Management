@@ -16,7 +16,7 @@ public class ReservationRepository : Repository
             string typeQuery = "INSERT INTO is_reserved_at (reservation_number, object_type_id, amount) VALUES (@reservation_number, @object_type_id, @amount);";
 
             // create reservation and add the new id to the existing object
-            int newId = Connection.Execute(reservationQuery, new 
+            int newId = Connection.Query<int>(reservationQuery, new 
             {
                 customer_id = reservationToCreate.CustomerData.id,
                 start_date = reservationToCreate.start_date.Date, 
@@ -24,7 +24,7 @@ public class ReservationRepository : Repository
                 reservationToCreate.residence, 
                 reservationToCreate.comment, 
                 reservationToCreate.payment_method
-            });
+            }).First();
 
             foreach (ObjectAmount objectAmount in reservationToCreate.ObjectAmounts) {
                 Connection.Query(typeQuery, new {
@@ -373,7 +373,6 @@ public class ReservationRepository : Repository
 
     public List<ObjectData> SelectAvailableObjects(DateTime startDate, DateTime endDate, List<ObjectAmount> objectAmounts)
     {
-        // TODO FIXxxx
         try {
             Connect();
             string query = @"

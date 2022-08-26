@@ -118,3 +118,4 @@
 /home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/Object_management.pdb
 /home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/Object_management.genruntimeconfig.cache
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/libman.json
+/home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/Newtonsoft.Json.dll

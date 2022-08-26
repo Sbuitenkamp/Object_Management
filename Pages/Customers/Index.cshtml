@@ -22,29 +22,16 @@
             <thead class="content__table__head">
             <tr class="content__table__head__row">
                 <th class="content__table__head__row__element">
-                        @* <a class="sort-button" href="#" onclick="sortBy(`customer`, `name`)">Naam <i class="fa-solid fa-sort-down"></i></a>  "fa-sort-up"*@
-                    <a class="sort-button" href="#" onclick="sortBy('customer', 'name', true)">Naam <i class="fa-solid fa-sort"></i></a>
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'customer', 'name', false)">Naam <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.Sort == "telephone" && !Model.SortDesc) {
-                        <a class="sort-button" href="?sort=telephone&desc=true">Telefoon <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?sort=telephone">Telefoon <i class="fa-solid @(Model.Sort == "telephone" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'customer', 'telephone', false)">Telefoon <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.Sort == "email" && !Model.SortDesc) {
-                        <a class="sort-button" href="?sort=email&desc=true">E-mail <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?sort=email">E-mail <i class="fa-solid @(Model.Sort == "email" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'customer', 'email', false)">E-mail <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.Sort == "adres" && !Model.SortDesc) {
-                        <a class="sort-button" href="?sort=adres&desc=true">Adres <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?sort=adres">Adres <i class="fa-solid @(Model.Sort == "adres" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'customer', 'email', false)">Adres <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
                     <a class="sort-button button" href="/customers">Filter leegmaken</a>

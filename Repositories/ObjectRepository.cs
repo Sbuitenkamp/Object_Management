@@ -164,15 +164,7 @@ public class ObjectRepository : Repository
                 });
                 
                 foreach (Sale sale in type.Sales) {
-                    string saleQuery;
-                    if (sale.IsApplied) {
-                        int rows = Connection.Execute("SELECT object_type_id, sale_id AS id FROM is_applied_to WHERE object_type_id = @type_id AND sale_id = @sale_id", new { type_id = type.id, sale_id = sale.id });
-                        if (rows != 0) continue; // if the relation already exists, we skip because we don't wnat duplicate entries
-                        saleQuery = "INSERT IGNORE INTO is_applied_to (sale_id, object_type_id) VALUES (@sale_id, @obj_type)";
-                    } else {
-                        saleQuery = "DELETE FROM is_applied_to WHERE object_type_id=@obj_type AND sale_id=@sale_id";
-                    }
-
+                    string saleQuery = sale.IsApplied ? "INSERT IGNORE INTO is_applied_to (sale_id, object_type_id) VALUES (@sale_id, @obj_type)" : "DELETE FROM is_applied_to WHERE object_type_id=@obj_type AND sale_id=@sale_id";
                     rowCount += Connection.Execute(saleQuery, new { sale_id = sale.id, obj_type = type.id });
                 }
             }

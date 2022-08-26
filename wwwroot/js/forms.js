@@ -12,7 +12,7 @@ function onClickGiveOut(resId) {
         const value = { object_number: parseInt(input.name) };
         data.Reservations[0].Objects.push(value);
     });
-    
+    console.log(data)
     post(data, window.location.href, "/reservations");
 }
 
@@ -48,27 +48,35 @@ function markForms(isHidden) {
 }
 
 // turn all changed forms to an object
-function parseForms(table, noNeedForChange) {
+function parseForms(table, noNeedForChange, container) {
     let counter = 0;
     let forms;
+    let searchContainer;
+    if (container) searchContainer = container;
+    else searchContainer = document;
     // get all the (changed) forms
-    if (noNeedForChange) forms = document.querySelectorAll("form");
-    else forms = document.querySelectorAll(`form[changed="true"]`);
+    if (noNeedForChange) forms = searchContainer.querySelectorAll("form");
+    else forms = searchContainer.querySelectorAll(`form[changed="true"]`);
     forms.forEach(form => {
         // initialize some data with special treatment for 2 tables
-        if (table === "Objects") data[table][counter] = { object_number: parseInt(form.id) };
-        else if (table === "Reservations") data[table][counter] = { reservation_number: parseInt(form.id) };
-        else data[table][counter] = { id: parseInt(form.id) }; 
+        if (/(object)(?!type){4}/g.test(table.toLowerCase())) data[table][counter] = { object_number: parseInt(form.id) };
+        else if (/(reservation)/g.test(table.toLowerCase())) data[table][counter] = { reservation_number: parseInt(form.id) };
+        else data[table][counter] = { id: parseInt(form.id) };
+        
         // get all form fields from the current form
-        document.querySelectorAll(`input[form="${form.id}"], select[form="${form.id}"] > option`).forEach(field => {
-            if (field.disabled || field.type === "hidden" || field.name === "toggle") return; // as usual skip unusable fields
+        searchContainer.querySelectorAll(`input[form="${form.id}"], select[form="${form.id}"] > option`).forEach(field => {
+            if ((field.disabled && !noNeedForChange) || field.type === "hidden" || field.name === "toggle") return; // as usual skip unusable fields
             let value;
             if (field.tagName.toLowerCase() === "input") { // handle input
                 if (field.type === "checkbox") value = field.checked;
                 else if (field.type === "number") value = parseInt(field.value);
                 else if (field.type === "text") {
                     if (/\d/.test(field.value) && !["adres", "telephone"].includes(field.name)) { // parse numbers
-                        if (field.value.includes('.')) value = parseFloat(field.value);
+                        // dates that have (partially) spelled out months
+                        if (/(jan|feb|maa|mar|apr|may|mei|jun|jul|aug|sep|oct|okt|nov|dec)/ig.test(field.value)) {
+                            const newDate = new Date(field.value);
+                            value = `${newDate.getDate()} ${monthNamesEnum[newDate.getMonth()]} ${newDate.getFullYear()}`;
+                        } else if (field.value.includes('.')) value = parseFloat(field.value);
                         else value = parseInt(field.value);
                     } else value = field.value;
                 }
@@ -77,11 +85,24 @@ function parseForms(table, noNeedForChange) {
                 field.name = field.parentElement.name; // get the name of the select tag
                 if (field.name === "object_type") { // special treatment for objectTypes
                     field.name = "Type";
-                    value = { id: parseInt(field.value) };
+                    value = { 
+                        id: parseInt(field.value),
+                        description: field.innerHTML // get description text
+                    };
                 } else if (/\d/.test(field.value)) { // parse numbers
-                    if (field.value.includes('.')) value = parseFloat(field.value);
+                    if (field.value.includes('.')) value = parseFloat(field.value); // floats
                     else value = parseInt(field.value);
                 } else value = field.value;
+            }
+            if (/object(?![_*-])([A-z])/g.test(field.name)) { // test for fields that start with lowercase object and then precede with an attached word without any symbols in between (for reservation sort)
+                const newName = field.name.replace("object", "");
+                const id = field.id.replace(newName, "obj");
+                console.log(newName)
+                console.log(id)
+                if (!data[table][counter].Objects) data[table][counter].Objects = [];
+                if (!data[table][counter].Objects[id]) data[table][counter].Objects[id] = {};
+                data[table][counter].Objects[id][newName] = value;
+                return;
             }
             if (field.name.startsWith("sale")) { // special treatment for sales
                 const id = parseInt(field.name.replace("sale", ''));

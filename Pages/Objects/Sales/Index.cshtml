@@ -20,9 +20,15 @@
         <table class="content__table">
             <thead class="content__table__head">
             <tr class="content__table__head__row">
-                <th class="content__table__head__row__element">Aantal huurdagen</th>
-                <th class="content__table__head__row__element">Aantal te betalen dagen</th>
-                <th class="content__table__head__row__element"></th>
+                <th class="content__table__head__row__element">
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'sale', 'days_to_rent', false)">Aantal huurdagen <i class="fa-solid fa-sort"></i></a>
+                </th>
+                <th class="content__table__head__row__element">
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'sale', 'days_to_pay', false)">Aantal te betalen dagen <i class="fa-solid fa-sort"></i></a>
+                </th>
+                <th class="content__table__head__row__element">
+                    <a class="sort-button button" href="#" onclick="sortBy(this, 'sale', 'id', false)">Filter leegmaken</a>
+                </th>
             </tr>
             </thead>
             <tbody class="content__table__body">

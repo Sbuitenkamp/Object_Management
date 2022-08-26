@@ -27,7 +27,11 @@ body {
   background-color: $white;
   height: 100vh;
   width: 100vw;
-  overflow-x: hidden;
+  overflow-x: scroll;
+}
+
+table {
+  border-spacing: 0;
 }
 
 .button {

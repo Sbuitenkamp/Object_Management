@@ -1,5 +1,6 @@
 @page
 @using Object_management.Entity
+@using Object_management.Models
 @model Object_management.Pages.Reservations.Index
 
 @{
@@ -17,58 +18,30 @@
     <h1 class="content__title">Uitgegeven reserveringen</h1>
     <a class="sort-button button" href="/reservations">Filter leegmaken</a>
     @if (Model.GivenOutReservations.Count != 0 ) {
-        <table class="content__table">
+        <table id="table-upper" class="content__table">
             <thead class="content__table__head">
             <tr class="content__table__head__row">
                 <th class="content__table__head__row__element content__table__head__row__element--toggle"></th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "givenOut" && Model.Sort == "reservationNumber" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=givenOut&sort=reservationNumber&desc=true">Reserveringsnummer <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=givenOut&sort=reservationNumber">Reserveringsnummer <i class="fa-solid @(Model.SortTable == "givenOut" && Model.Sort == "reservationNumber" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'reservation_number', false, null, true)">Reserveringsnummer <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "givenOut" && Model.Sort == "customer" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=givenOut&sort=customer&desc=true">Klantnaam <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=givenOut&sort=customer">Klantnaam <i class="fa-solid @(Model.SortTable == "givenOut" && Model.Sort == "customer" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'CustomerData', false, 'id', true)">Klantnaam <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "givenOut" && Model.Sort == "paymentMethod" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=givenOut&sort=paymentMethod&desc=true">Betaalmethode <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=givenOut&sort=paymentMethod">Betaalmethode <i class="fa-solid @(Model.SortTable == "givenOut" && Model.Sort == "paymentMethod" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'payment_method', false, null, true)">Betaalmethode <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "givenOut" && Model.Sort == "startDate" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=givenOut&sort=startDate&desc=true">Verhuurd vanaf <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=givenOut&sort=startDate">Verhuurd vanaf <i class="fa-solid @(Model.SortTable == "givenOut" && Model.Sort == "startDate" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'start_date', false, null, true)">Verhuurd vanaf <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "givenOut" && Model.Sort == "endDate" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=givenOut&sort=endDate&desc=true">Verhuurd tot <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=givenOut&sort=endDate">Verhuurd tot <i class="fa-solid @(Model.SortTable == "givenOut" && Model.Sort == "endDate" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'end_date', false, null, true)">Verhuurd tot <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "givenOut" && Model.Sort == "price" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=givenOut&sort=price&desc=true">Totaalprijs <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=givenOut&sort=price">Totaalprijs <i class="fa-solid @(Model.SortTable == "givenOut" && Model.Sort == "price" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'price', false, null, true)">Totaalprijs <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "givenOut" && Model.Sort == "paid" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=givenOut&sort=paid&desc=true">Betaald <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=givenOut&sort=paid">Betaald <i class="fa-solid @(Model.SortTable == "givenOut" && Model.Sort == "paid" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'paid', false, null, true)">Betaald <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element content__table__head__row__element--button"></th>
                 <th class="content__table__head__row__element content__table__head__row__element--button"></th>
@@ -88,10 +61,10 @@
                         <input disabled="disabled" type="text" name="reservation_number" form="@reservation.reservation_number" value="@reservation.reservation_number">
                     </td>
                     <td class="content__table__body__row__element">
-                        <input disabled="disabled" type="text" name="customername" form="" value="@reservation.CustomerData.name">
+                        <input disabled="disabled" type="text" name="customerName" form="@reservation.reservation_number" value="@reservation.CustomerData.name">
                     </td>
                     <td class="content__table__body__row__element">
-                        <input disabled="disabled" type="text" name="paymend_method" form="@reservation.reservation_number" value="@reservation.payment_method">
+                        <input disabled="disabled" type="text" name="payment_method" form="@reservation.reservation_number" value="@reservation.payment_method">
                     </td>
                     <td class="content__table__body__row__element">
                         <input disabled="disabled" type="text" name="start_date" form="@reservation.reservation_number" value="@reservation.start_date.Date.ToString("dd MMMM yyyy")">
@@ -100,7 +73,7 @@
                         <input disabled="disabled" type="text" name="return_date" form="@reservation.reservation_number" value="@reservation.return_date.Date.ToString("dd MMMM yyyy")">
                     </td>
                     <td class="content__table__body__row__element">
-                        <input disabled="disabled" type="text" name="total" form="@reservation.reservation_number" value="&euro;@($"{reservation.Objects.Select(x => x.CalculatePrice(reservation.start_date, reservation.return_date)).Sum():0.00}")">
+                        &euro;<input disabled="disabled" type="text" name="total" form="@reservation.reservation_number" value="@($"{reservation.Objects.Select(x => x.CalculatePrice(reservation.start_date, reservation.return_date)).Sum():0.00}")">
                     </td>
                     <td class="content__table__body__row__element">
                         <input type="checkbox" name="paid" form="@reservation.reservation_number" checked="@reservation.paid">
@@ -112,30 +85,42 @@
                         <button onclick="deleteReservation(@reservation.reservation_number)" class="content__table__body__row__element button button--delete"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>
-                <tr class="content__table__body__row content__table__body__row--hidden hide" id="reservation-body-@reservation.reservation_number">
-                    <td colspan="5">
+                <tr class="content__table__body__row content__table__body__row--hidden hide @(reservation.return_date < DateTime.Today ? "warning warning--tr" : "")" id="reservation-body-@reservation.reservation_number">
+                    <td colspan="3">
                         <table class="content__table__body__row--hidden__customer-table">
-                            <thead>
                             <tr>
                                 <th>Klantnaam</th>
-                                <th>Verblijf</th>
-                                <th>Email</th>
-                                <th>Telefoonnummer</th>
-                                <th>Adres</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="customerName" form="@reservation.reservation_number" value="@reservation.CustomerData.name">
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
                             <tr>
-                                <td>@reservation.CustomerData.name</td>
-                                <td>@reservation.residence</td>
-                                <td>@reservation.CustomerData.email</td>
-                                <td>@reservation.CustomerData.telephone</td>
-                                <td>@reservation.CustomerData.adres</td>
+                                <th>Verblijf</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="residence" form="@reservation.reservation_number" value="@reservation.residence">
+                                </td>
                             </tr>
-                            </tbody>
+                            <tr>
+                                <th>Email</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="customerEmail" form="@reservation.reservation_number" value="@reservation.CustomerData.email">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Telefoonnummer</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="customerTelephone" form="@reservation.reservation_number" value="@reservation.CustomerData.telephone">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Adres</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="customerAdres" form="@reservation.reservation_number" value="@reservation.CustomerData.adres">
+                                </td>
+                            </tr>
                         </table>
                     </td>
-                    <td colspan="4">
+                    <td colspan="10">
                         <table class="content__table__body__row--content__objects-table">
                         <thead>
                         <tr>
@@ -148,10 +133,15 @@
                         <tbody>
                         @foreach (ObjectData objectData in reservation.Objects.OrderBy(x => x.Type.description)) {
                             <tr>
-                                <td>@objectData.object_number</td>
-                                <td>@objectData.Type.description</td>
-                                <td>&euro;@($"{objectData.CalculatePrice(reservation.start_date, reservation.return_date):0.00}")</td>
-                                <td><button onclick="unReserveObject(@objectData.Type.id, @reservation.reservation_number, '@objectData.Type.description')" class="button button--delete"><i class="fa-solid fa-trash-can"></i></button></td>
+                                <td>
+                                    <input type="text" id="ObjectNumber@(objectData.object_number)" disabled="disabled" name="objectObjectNumber" form="@reservation.reservation_number" value="@objectData.object_number">
+                                </td>
+                                <td>
+                                    <input type="text" id="TypeDescription@(objectData.object_number)" disabled="disabled" name="objectTypeDescription" form="@reservation.reservation_number" value="@objectData.Type.description">
+                                </td>
+                                <td class="currency">
+                                    &euro;<input type="text" id="PriceSingle@(objectData.object_number)" disabled="disabled" name="objectPriceSingle" form="@reservation.reservation_number" value="@($"{objectData.CalculatePrice(reservation.start_date, reservation.return_date):0.00}")">
+                                </td>
                             </tr>
                         }
                         </tbody>
@@ -166,58 +156,33 @@
     }
     <h1 class="content__title">Reserveringen</h1>
     @if (Model.ReservedReservations.Count != 0 ) {
-        <table class="content__table">
+        <table id="table-lower" class="content__table">
             <thead class="content__table__head">
             <tr class="content__table__head__row">
                 <th class="content__table__head__row__element content__table__head__row__element--toggle"></th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "reservations" && Model.Sort == "reservationNumber" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=reservations&sort=reservationNumber&desc=true">Reserveringsnummer <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=reservations&sort=reservationNumber">Reserveringsnummer <i class="fa-solid @(Model.SortTable == "reservations" && Model.Sort == "reservationNumber" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'reservation_number', false)">Reserveringsnummer <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "reservations" && Model.Sort == "customer" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=reservations&sort=customer&desc=true">Klantnaam <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=reservations&sort=customer">Klantnaam <i class="fa-solid @(Model.SortTable == "reservations" && Model.Sort == "customer" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'reservation_number', false)">Reserveringsnummer <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "reservations" && Model.Sort == "paymentMethod" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=reservations&sort=paymentMethod&desc=true">Betaalmethode <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=reservations&sort=paymentMethod">Betaalmethode <i class="fa-solid @(Model.SortTable == "reservations" && Model.Sort == "paymentMethod" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'CustomerData', false, 'id')">Klantnaam <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "reservations" && Model.Sort == "startDate" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=reservations&sort=startDate&desc=true">Verhuurd vanaf <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=reservations&sort=startDate">Verhuurd vanaf <i class="fa-solid @(Model.SortTable == "reservations" && Model.Sort == "startDate" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'payment_method', false)">Betaalmethode <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "reservations" && Model.Sort == "endDate" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=reservations&sort=endDate&desc=true">Verhuurd tot <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=reservations&sort=endDate">Verhuurd tot <i class="fa-solid @(Model.SortTable == "reservations" && Model.Sort == "endDate" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'start_date', false)">Verhuurd vanaf <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "reservations" && Model.Sort == "price" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=reservations&sort=price&desc=true">Totaalprijs <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=reservations&sort=price">Totaalprijs <i class="fa-solid @(Model.SortTable == "reservations" && Model.Sort == "price" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'end_date', false)">Verhuurd tot <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element">
-                    @if (Model.SortTable == "reservations" && Model.Sort == "paid" && !Model.SortDesc) {
-                        <a class="sort-button" href="?table=reservations&sort=paid&desc=true">Betaald <i class="fa-solid fa-sort-down"></i></a>
-                    } else {
-                        <a class="sort-button" href="?table=reservations&sort=paid">Betaald <i class="fa-solid @(Model.SortTable == "reservations" && Model.Sort == "paid" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                    }
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'price', false)">Totaalprijs <i class="fa-solid fa-sort"></i></a>
+                </th>
+                <th class="content__table__head__row__element">
+                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'paid', false)">Betaald <i class="fa-solid fa-sort"></i></a>
                 </th>
                 <th class="content__table__head__row__element content__table__head__row__element--button"></th>
                 <th class="content__table__head__row__element content__table__head__row__element--button"></th>
@@ -241,7 +206,7 @@
                         <input disabled="disabled" type="text" name="customername" form="" value="@reservation.CustomerData.name">
                     </td>
                     <td class="content__table__body__row__element">
-                        <input disabled="disabled" type="text" name="paymend_method" form="@reservation.reservation_number" value="@reservation.payment_method">
+                        <input disabled="disabled" type="text" name="payment_method" form="@reservation.reservation_number" value="@reservation.payment_method">
                     </td>
                     <td class="content__table__body__row__element">
                         <input disabled="disabled" type="text" name="start_date" form="@reservation.reservation_number" value="@reservation.start_date.Date.ToString("dd MMMM yyyy")">
@@ -250,7 +215,7 @@
                         <input disabled="disabled" type="text" name="return_date" form="@reservation.reservation_number" value="@reservation.return_date.Date.ToString("dd MMMM yyyy")">
                     </td>
                     <td class="content__table__body__row__element">
-                        <input disabled="disabled" type="text" name="total" form="@reservation.reservation_number" value="&euro;@($"{reservation.Objects.Select(x => x.CalculatePrice(reservation.start_date, reservation.return_date)).Sum():0.00}")">
+                        &euro;<input disabled="disabled" type="text" name="total" form="@reservation.reservation_number" value="@($"{reservation.Objects.Select(x => x.CalculatePrice(reservation.start_date, reservation.return_date)).Sum():0.00}")">
                     </td>
                     <td class="content__table__body__row__element">
                         <input type="checkbox" name="paid" form="@reservation.reservation_number" checked="@reservation.paid">
@@ -263,31 +228,47 @@
                     </td>
                 </tr>
                 <tr class="content__table__body__row content__table__body__row--hidden hide" id="reservation-body-@reservation.reservation_number">
-                    <td colspan="5">
+                    <td colspan="3">
                         <table class="content__table__body__row--hidden__customer-table">
-                            <thead>
                             <tr>
                                 <th>Klantnaam</th>
-                                <th>Verblijf</th>
-                                <th>Email</th>
-                                <th>Telefoonnummer</th>
-                                <th>Adres</th>
-                                <th>Opmerking</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="customerName" form="@reservation.reservation_number" value="@reservation.CustomerData.name">
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
                             <tr>
-                                <td>@reservation.CustomerData.name</td>
-                                <td>@reservation.residence</td>
-                                <td>@reservation.CustomerData.email</td>
-                                <td>@reservation.CustomerData.telephone</td>
-                                <td>@reservation.CustomerData.adres</td>
-                                <td>@reservation.comment</td>
+                                <th>Verblijf</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="residence" form="@reservation.reservation_number" value="@reservation.residence">
+                                </td>
                             </tr>
-                            </tbody>
+                            <tr>
+                                <th>Email</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="customerEmail" form="@reservation.reservation_number" value="@reservation.CustomerData.email">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Telefoonnummer</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="customerTelephone" form="@reservation.reservation_number" value="@reservation.CustomerData.telephone">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Adres</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="customerAdres" form="@reservation.reservation_number" value="@reservation.CustomerData.adres">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Opmerking</th>
+                                <td>
+                                    <input type="text" disabled="disabled" name="comment" form="@reservation.reservation_number" value="@reservation.comment">
+                                </td>
+                            </tr>
                         </table>
                     </td>
-                    <td colspan="4">
+                    <td colspan="10">
                         <table class="content__table__body__row--content__objects-table">
                         <thead>
                         <tr>
@@ -298,11 +279,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach (ObjectData objectData in reservation.Objects.OrderBy(x => x.Type.description)) {
+                        @foreach ((ObjectData objectData, int i) in reservation.Objects.OrderBy(x => x.Type.description).WithIndex()) {
                             <tr>
-                                <td>@objectData.Type.description</td>
-                                <td>@reservation.ObjectAmounts.First(x => x.object_type_id == objectData.Type.id).amount</td>
-                                <td>&euro;@($"{objectData.CalculatePrice(reservation.start_date, reservation.return_date):0.00}")</td>
+                                <td>
+                                    <input type="text" id="TypeDescription@(i+1)" disabled="disabled" name="objectTypeDescription" form="@reservation.reservation_number" value="@objectData.Type.description">
+                                </td>
+                                <td>
+                                    <input type="text" id="Amount@(i+1)" disabled="disabled" name="objectAmount" form="@reservation.reservation_number" value="@reservation.ObjectAmounts.First(x => x.object_type_id == objectData.Type.id).amount">
+                                </td>
+                                <td class="currency">
+                                    &euro;<input type="text" id="PriceSingle@(i+1)" disabled="disabled" name="objectPriceSingle" form="@reservation.reservation_number" value="@($"{objectData.CalculatePrice(reservation.start_date, reservation.return_date):0.00}")">
+                                </td>
                                 @if (reservation.Objects.Count > 1) {
                                     <td><button onclick="unReserveObject(@objectData.Type.id, @reservation.reservation_number, '@objectData.Type.description')" class="button button--delete"><i class="fa-solid fa-trash-can"></i></button></td>
                                 } else {

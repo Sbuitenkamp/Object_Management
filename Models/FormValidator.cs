@@ -1,12 +1,18 @@
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using Object_management.Entity;
+using Object_management.Repositories;
 
 namespace Object_management.Models;
 
-public static class FormValidator
+public class FormValidator
 {
-    public static string ValidateReservation(Reservation reservation)
+    private CustomerRepository CustomerRepo = new CustomerRepository();
+    private ObjectRepository ObjectRepo = new ObjectRepository();
+    private ReservationRepository ReservationRepo = new ReservationRepository();
+    private SaleRepository SaleRepo = new SaleRepository();
+    
+    public string ValidateReservation(Reservation reservation)
     {
         string returnMessage = string.Empty;
         if (reservation.CustomerData.id == null) returnMessage = "Er is geen klant geselecteerd.";
@@ -16,7 +22,7 @@ public static class FormValidator
         return returnMessage;
     }
 
-    public static string ValidateObject(ObjectData obj)
+    public string ValidateObject(ObjectData obj)
     {
         string returnMessage = string.Empty;
         if (obj.object_number == null) returnMessage = "Fietsnummer is leeg.";
@@ -24,15 +30,15 @@ public static class FormValidator
         return returnMessage;
     }
 
-    public static string ValidateObjectType(ObjectType objectType)
+    public string ValidateObjectType(ObjectType objectType)
     {
         string returnMessage = string.Empty;
         if (objectType.description == null) returnMessage = "Fietssoort moet een omschrijving hebben.";
-        else if (objectType.price > 0) returnMessage = "Prijs kan niet onder de nul zijn";
+        else if (objectType.price < 0) returnMessage = "Prijs kan niet onder de nul zijn";
         return returnMessage;
     }
 
-    public static string ValidateSale(Sale sale)
+    public string ValidateSale(Sale sale)
     {
         string returnMessage = string.Empty;
         if (sale.days_to_rent < sale.days_to_pay) returnMessage = "Te huren dagen kan niet kleiner zijn dan te betalen dagen.";
@@ -40,7 +46,7 @@ public static class FormValidator
         return returnMessage;
     }
 
-    public static string ValidateCustomer(Customer customer)
+    public string ValidateCustomer(Customer customer)
     {
         string returnMessage = string.Empty;
         if (customer.name == null) returnMessage = "De naam van de klant is leeg.";
@@ -51,13 +57,13 @@ public static class FormValidator
         return returnMessage;
     }
 
-    private static bool ValidatePhone(string phone)
+    private bool ValidatePhone(string phone)
     {
         const string phoneRegex = @"([+]?\d{1,3}[.\s-]?)?6?(\d{8,10})";
         return Regex.IsMatch(phone, phoneRegex);
     }
 
-    private static bool ValidateEmail(string email)
+    private bool ValidateEmail(string email)
     {
         string trimmedEmail = email.Trim();
         if (trimmedEmail.EndsWith('.')) return false;
@@ -68,7 +74,7 @@ public static class FormValidator
         return true;
     }
 
-    public static object GenerateResultObject(int result)
+    public object GenerateResultObject(int result, string table)
     {
         object returnData;
         string resultMessage = string.Empty;
@@ -81,13 +87,17 @@ public static class FormValidator
                 resultMessage = "Er zijn geen gegevens aangepast.";
                 break;
             default:
-                resultMessage = $"Gegevens successvol aangepast.";
+                resultMessage = "Gegevens successvol aangepast.";
                 break;
         }
-                
-        if (result <= 0) returnData = new { warning = resultMessage };
-        else returnData = new { success = resultMessage };
 
-        return returnData;
+        switch (table) {
+            case "Object":
+                List<ObjectData> data = ObjectRepo.SelectObjects();
+                if (result <= 0) return new { warning = resultMessage, body = new { table, data } };
+                return new { success = resultMessage, body = new { table, data } };
+            default:
+                return new { };
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace Object_management.Pages.Objects;
 public class Index : PageModel
 {
     private readonly ObjectRepository ObjectRepo = new ObjectRepository();
+    private readonly FormValidator Validator = new FormValidator();
 
     public List<ObjectData> ObjectList { get; private set; } = new List<ObjectData>();
     public List<ObjectType> ObjectTypeList { get; private set; } = new List<ObjectType>();
@@ -52,17 +53,17 @@ public class Index : PageModel
 
             switch (formData.QueryType) {
                 case "edit":
-                    validationMsg = FormValidator.ValidateObjectType(formData.ObjectTypes.First());
+                    validationMsg = Validator.ValidateObjectType(formData.ObjectTypes.First());
                     if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 
                     result = ObjectRepo.UpdateObjectType(formData.ObjectTypes);
-                    return new JsonResult(FormValidator.GenerateResultObject(result));
+                    return new JsonResult(Validator.GenerateResultObject(result, "Objects"));
                 case "drop":
-                    validationMsg = FormValidator.ValidateObjectType(formData.ObjectTypes.First());
+                    validationMsg = Validator.ValidateObjectType(formData.ObjectTypes.First());
                     if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
                     
                     result = ObjectRepo.DeleteObjectType(formData.ObjectTypes[0].id);
-                    return new JsonResult(FormValidator.GenerateResultObject(result));
+                    return new JsonResult(Validator.GenerateResultObject(result, "Objects"));
             }
 
             return new JsonResult(new { warning = "Querytype is empty exception" });
@@ -74,17 +75,17 @@ public class Index : PageModel
                 
             switch (formData.QueryType) {
                 case "edit":
-                    validationMsg = FormValidator.ValidateObject(formData.Objects.First());
+                    validationMsg = Validator.ValidateObject(formData.Objects.First());
                     if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 
                     result = ObjectRepo.UpdateObject(formData.Objects);
-                    return new JsonResult(FormValidator.GenerateResultObject(result));
+                    return new JsonResult(Validator.GenerateResultObject(result, "Object"));
                 case "drop":
-                    validationMsg = FormValidator.ValidateObject(formData.Objects.First());
+                    validationMsg = Validator.ValidateObject(formData.Objects.First());
                     if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 
                     result = ObjectRepo.DeleteObject(formData.Objects[0].object_number);
-                    return new JsonResult(FormValidator.GenerateResultObject(result));
+                    return new JsonResult(Validator.GenerateResultObject(result, "Object"));
             }
             return new JsonResult(new { warning = "Querytype is empty exception" });
         }

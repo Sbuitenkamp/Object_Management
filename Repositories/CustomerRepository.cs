@@ -28,7 +28,7 @@ public class CustomerRepository : Repository
     {
         try {
             Connect();
-            return Connection.Query<Customer>("SELECT * FROM Customer LIMIT @offset, 3", new { offset }).ToList();
+            return Connection.Query<Customer>("SELECT * FROM Customer LIMIT @offset, 40", new { offset }).ToList();
         } catch (Exception e) {
             Console.WriteLine(e);
             throw;

@@ -10,6 +10,7 @@ namespace Object_management.Pages.Reservations;
 public class Index : PageModel
 {
     private readonly ReservationRepository ReservationRepo = new ReservationRepository();
+    private readonly FormValidator Validator = new FormValidator();
     public List<Reservation> ReservedReservations = new List<Reservation>();
     public List<Reservation> GivenOutReservations = new List<Reservation>();
 
@@ -62,18 +63,20 @@ public class Index : PageModel
         if (formData.Reservations.Count != 0) {
             switch (formData.QueryType) {
                 case "edit":
-                    validationMsg = FormValidator.ValidateObject(formData.Objects.First());
-                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
-
+                    if (formData.Objects.Count != 0) {
+                        validationMsg = Validator.ValidateObject(formData.Objects.First());
+                        if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+                    }
                     result = ReservationRepo.UpdateReservation(formData.Reservations);
-                    return new JsonResult(FormValidator.GenerateResultObject(result));
+                    return new JsonResult(Validator.GenerateResultObject(result, "Reservation"));
                 case "drop":
-                    validationMsg = FormValidator.ValidateObject(formData.Objects.First());
-                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
-
+                    if (formData.Objects.Count != 0) {
+                        validationMsg = Validator.ValidateObject(formData.Objects.First());
+                        if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
+                    }
                     // different handling depending on whether the reservation has been given out
                     result = formData.Reservations[0].Objects.Count != 0 ? ReservationRepo.DeleteReservedObject(formData.Reservations[0]) : ReservationRepo.DeleteReservation(formData.Reservations[0].reservation_number);
-                    return new JsonResult(FormValidator.GenerateResultObject(result));
+                    return new JsonResult(Validator.GenerateResultObject(result, "Reservation"));
             }
 
             return new JsonResult(new { warning = "Querytype is empty exception" });

@@ -1,34 +1,69 @@
-function sortBy(table, field, descending) {
+function sortBy(button, table, field, descending, subField, upperTable) {
     const thead = document.querySelector(`thead.content__table__head`);
-    const tbody = document.querySelector(`tbody.content__table__body`);
+    let container;
     data = {
-        [table]: [] // create the list for the data to update with the correct name
+        [table]: [], // create the list for the data to update with the correct name
+        objectTypes: []
+    };
+    memory.sort = { field, descending, subField };
+    const selector = table === "reservation" && upperTable ? "table#table-upper" : table === "reservation" ? "table#table-lower" : "";
+    if (selector) container = document.querySelector(selector);
+    parseForms(table, true, container);
+    if (table === "reservation") {
+        for (const reservation of data[table]) {
+            if (!reservation.Customer) reservation.Customer = {};
+            for (const property of Object.getOwnPropertyNames(reservation)) {
+                if (/customer(?![_*-])([A-z])/g.test(property)) {
+                    const newName = property.replace("customer", "");
+                    reservation.Customer[newName] = reservation[property];
+                    delete reservation[property];
+                }
+            }
+            // set the object array to proper indexes
+            let counter = 0;
+            for (const obj in reservation.Objects) {
+                if (typeof reservation.Objects[obj] === 'function') continue;
+                reservation.Objects[counter] = reservation.Objects[obj];
+                delete reservation.Objects[obj];
+                counter++;
+            }
+        }
     }
-    parseForms(table, true);
-    
-    if (descending) data[table].sort((a,b) => (b[field] > a[field]) ? 1 : ((a[field] > b[field] ? -1 : 0)));
-    else data[table].sort((a,b) => (a[field] > b[field]) ? 1 : ((b[field] > a[field] ? -1 : 0)));
-    
-    // backup some important functional stuff
-    const requestToken = tbody.querySelector("input[name='__RequestVerificationToken']");
-    const hidden = tbody.querySelectorAll("input[type='hidden']");
+    // switch the types into a different array
+    for (const item of data[table]) {
+        if (!(item.description)) continue;
+        item.id = item.object_number;
+        delete item.object_number;
+        data.objectTypes.push(item);
+        delete data[table][data[table].indexOf(item)];
+    }
+    data[table] = data[table].clean();
 
-    console.log(requestToken)
-    // empty table and repopulate with the important stuff
-    tbody.innerHTML = ""; 
-    tbody.appendChild(requestToken)
-    for (const hiddenInput of hidden) tbody.appendChild(hiddenInput);
+    console.log(data);
+    sortData(data[table], memory.sort);
 
+    clearTable(container);
     // window[table] = the individual item of data[table], window[table+"Row"] = the function that returns the HTML row as defined in html-formats.js
-    for (window[table] of data[table]) tbody.innerHTML += window[table + "Row"](window[table]);
+    for (window[table] of data[table]) renderTable(window[`${table}Row${upperTable ? "Upper" : ""}`](window[table], data), container);
     
-    // visual indicators
-    const button = thead.querySelector(`a[onclick="sortBy('${table}', '${field}', ${descending})"]`);
-    button.children[0].classList.remove("fa-sort");
-    button.children[0].classList.remove(descending ? "fa-sort-up" : "fa-sort-down");
-    button.children[0].classList.add(descending ? "fa-sort-down" : "fa-sort-up");
-    // flip the descending parameter
-    button.setAttribute("onclick", `sortBy('${table}', '${field}', ${!descending})`);
+    // reset other buttons
+    thead.querySelectorAll("a[onclick]").forEach(button => {
+        const arrow = button.children[0];
+        if (!arrow) return;
+        if ((arrow.className.includes("fa-sort-down") || arrow.className.includes("fa-sort-up"))) {
+            arrow.classList.remove("fa-sort-up", "fa-sort-down");
+            arrow.classList.add("fa-sort");
+            const newClick = button.getAttribute("onclick").replace("true", "false");
+            button.setAttribute("onclick", newClick.toString());
+        }
+    });
+    if (!["id", "object_number"].includes(field)) { // no flip for the reset button
+        // visual indicators
+        button.children[0].classList.remove("fa-sort", descending ? "fa-sort-up" : "fa-sort-down");
+        button.children[0].classList.add(descending ? "fa-sort-down" : "fa-sort-up");
+        // flip the descending parameter TODO fix uppertable param
+        button.setAttribute("onclick", `sortBy(this, '${table}', '${field}', ${!descending}, ${subField ? `'${subField}'` : null}, ${upperTable ? `${upperTable}` : null})`);
+    }
 }
 
 function selectMore(offset, table) {
@@ -161,16 +196,18 @@ function changeDate() {
 }
 
 // xmlhttprequest function
-function post(data, url, redirect) {
+function post(dataToSend, url, redirect) {
     const http = new XMLHttpRequest();
     http.open("POST", url);
     http.setRequestHeader("Content-type", "application/json");
     http.setRequestHeader("RequestVerificationToken", document.querySelector(`input[name="__RequestVerificationToken"]`).value);
-    http.send(JSON.stringify(data));
+    http.send(JSON.stringify(dataToSend));
     http.onload = () => {
         let ready = true;
+        console.log(http.responseText)
         const result = JSON.parse(http.responseText);
         if (result) {
+            console.log(result);
             if (result.success || result.warning) {
                 const type = result.success ? "confirmation" : "warning"; // set the type for dynamic class injection
                 const negType = result.success ? "warning" : "confirmation";
@@ -181,7 +218,7 @@ function post(data, url, redirect) {
                     textField.classList.add(`${type}--deactivated`);
                     ready = false;
                 }
-                new Promise((resolve) => {
+                new Promise((resolve) => { // animation timing
                     if (ready) return resolve();
                     setTimeout(() => {
                         textField.classList.add(`${type}--hidden`);
@@ -198,8 +235,37 @@ function post(data, url, redirect) {
                     offset = result.offset;
                 }
             }
+            if (result.body) {
+                const { table } = result.body;
+                console.log(data);
+                data = { [table]: [], objectTypes: [] };
+                parseForms(table, true);
+
+                // switch the types into a different array
+                for (const item of data[table]) {
+                    if (!item.description) continue;
+                    item.id = item.object_number;
+                    data.objectTypes.push(item);
+                }
+                
+                // no need for the existing data since it's outdated
+                delete data[table];
+                clearTable(); // todo upper table container
+                // const selector = table === "reservation" && upperTable ? "table#table-upper" : table === "reservation" ? "table#table-lower" : "";
+
+                for (const row of result.body.data) {
+                    row.Type = row.type; // annoying capitalisation stuff
+                    delete row.type;
+                }
+
+                if (memory.sort) sortData(result.body.data, memory.sort);
+                for (const row of result.body.data) {
+                    // todo keep sorted when rendering post result client side, then include in all other pages
+                    const html = window[table.toLowerCase() + "Row"](row, data);
+                    renderTable(html);
+                }
+            }
         } else {
-            console.log(offset)
             if (offset !== 0) {
                 let newSearch = "";
                 if (window.location.search) newSearch = window.location.search + "loadMore=" + offset;
@@ -212,7 +278,7 @@ function post(data, url, redirect) {
     }
 }
 
-// resultmsg function
+// result message function
 function message(textField, msg, type, negType, negField) {
     if (type === "warning") msg = `Er is een fout opgetreden: "${msg}" Probeer het later nog eens. Contacteer uw administrator als dit blijft gebeuren.`;
     if (negField.classList.contains(`${negType}--activated`)) { // remove error
@@ -232,6 +298,44 @@ function message(textField, msg, type, negType, negField) {
     }, 5000);
 }
 
+// sort
+function sortData(dataToSort, {field, descending, subField}) {
+    if (field === "sale") { // sales are too complicated to do procedurally
+        dataToSort.sort((a,b) => {
+            let saleA = data.objectTypes.find(x => x.id === a.Type.id).Sales.find(x => x.IsApplied);
+            let saleB = data.objectTypes.find(x => x.id === b.Type.id).Sales.find(x => x.IsApplied);
+            if (!saleA) saleA = { days_to_rent: 0 };
+            if (!saleB) saleB = { days_to_rent: 0 };
+            if (descending) return (saleB.days_to_rent > saleA.days_to_rent) ? 1 : ((saleA.days_to_rent > saleB.days_to_rent ? -1 : 0));
+            return (saleA.days_to_rent > saleB.days_to_rent) ? 1 : ((saleB.days_to_rent > saleA.days_to_rent ? -1 : 0));
+        })
+    } else if (subField) {
+        if (descending) dataToSort.sort((a,b) => (b[field][subField] > a[field][subField]) ? 1 : ((a[field][subField] > b[field][subField] ? -1 : 0)));
+        else dataToSort.sort((a,b) => (a[field][subField] > b[field][subField]) ? 1 : ((b[field][subField] > a[field][subField] ? -1 : 0)));
+    } else {
+        if (descending) dataToSort.sort((a, b) => (b[field] > a[field]) ? 1 : ((a[field] > b[field] ? -1 : 0)));
+        else dataToSort.sort((a, b) => (a[field] > b[field]) ? 1 : ((b[field] > a[field] ? -1 : 0)));
+    }
+}
+
+// re-render table
+function clearTable(container) {
+    const searchContainer = container ?? document;
+    const tbody = searchContainer.querySelector(`tbody.content__table__body`);
+    // backup some important functional stuff
+    const requestToken = tbody.querySelector("input[name='__RequestVerificationToken']");
+    const hidden = tbody.querySelectorAll("input[type='hidden']");
+
+    // empty table and repopulate with the important stuff
+    tbody.innerHTML = "";
+    tbody.appendChild(requestToken)
+    for (const hiddenInput of hidden) tbody.appendChild(hiddenInput);
+}
+function renderTable(html, container) {
+    const renderContainer = container ?? document;
+    renderContainer.querySelector(`tbody.content__table__body`).innerHTML += html;
+}
+
 // date methods
 Date.prototype.addDays = function(days) {
     const date = new Date(this);
@@ -249,4 +353,22 @@ Date.prototype.formatISO = function() {
     if (day.length < 2) day = '0' + day;
 
     return [year, month, day].join('-');
+}
+
+// array methods
+Array.prototype.clean = function() {
+    const result = [];
+    let index = -1;
+    let resIndex = -1;
+
+    while (++index < this.length) {
+        const value = this[index];
+        if (value) result[++resIndex] = value;
+    }
+
+    return result;
+}
+
+Number.prototype.formatCurrency = function () {
+    return currencyFormatter.format(this).replace(/(?:\$|€|£)/, '');
 }

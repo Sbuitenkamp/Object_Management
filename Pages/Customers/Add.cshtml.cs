@@ -32,9 +32,10 @@ public class Add : PageModel
             telephone = TelePhone,
             adres = Adres
         };
+        return new JsonResult(new {});
 
-        string validationMsg = FormValidator.ValidateCustomer(newCustomer);
-        if (validationMsg != string.Empty) return RedirectToPage(new { warning = validationMsg });
+        // string validationMsg = FormValidator.ValidateCustomer(newCustomer);
+        // if (validationMsg != string.Empty) return RedirectToPage(new { warning = validationMsg });
         
         int newCustomerId = CustomerRepo.Create(newCustomer);
         if (ReturnPage != null) return RedirectToPage("/" + ReturnPage, new { newCustomerId });

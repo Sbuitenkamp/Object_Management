@@ -72,56 +72,28 @@
                 <thead class="content__table__head">
                 <tr class="content__table__head__row">
                     <th class="content__table__head__row__element">
-                        @if (Model.Sort == "objectNumber" && !Model.SortDesc) {
-                            <a class="sort-button" href="?sort=objectNumber&desc=true">Fietsnummer <i class="fa-solid fa-sort-down"></i></a>
-                        } else {
-                            <a class="sort-button" href="?sort=objectNumber">Fietsnummer <i class="fa-solid @(Model.Sort == "objectNumber" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                        }
+                        <a class="sort-button" href="#" onclick="sortBy(this, 'object', 'object_number', false)">Fietsnummer <i class="fa-solid fa-sort"></i></a>
                     </th>
                     <th class="content__table__head__row__element">
-                        @if (Model.Sort == "objectType" && !Model.SortDesc) {
-                            <a class="sort-button" href="?sort=objectType&desc=true">Fietssoort <i class="fa-solid fa-sort-down"></i></a>
-                        } else {
-                            <a class="sort-button" href="?sort=objectType">Fietssoort <i class="fa-solid @(Model.Sort == "objectType" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                        }
+                        <a class="sort-button" href="#" onclick="sortBy(this, 'object', 'Type', false, 'id')">Fietssoort <i class="fa-solid fa-sort"></i></a>
                     </th>
                     <th class="content__table__head__row__element">
-                        @if (Model.Sort == "price" && !Model.SortDesc) {
-                            <a class="sort-button" href="?sort=price&desc=true">Prijs <i class="fa-solid fa-sort-down"></i></a>
-                        } else {
-                            <a class="sort-button" href="?sort=price">Prijs <i class="fa-solid @(Model.Sort == "price" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                        }
+                        <a class="sort-button" href="#" onclick="sortBy(this, 'object', 'price', false)">Prijs <i class="fa-solid fa-sort"></i></a>
                     </th>
                     <th class="content__table__head__row__element">
-                        @if (Model.Sort == "isLoanedOut" && !Model.SortDesc) {
-                            <a class="sort-button" href="?sort=isLoanedOut&desc=true">Vandaag verhuurd <i class="fa-solid fa-sort-up"></i></a>
-                        } else {
-                            <a class="sort-button" href="?sort=isLoanedOut">Vandaag verhuurd <i class="fa-solid @(Model.Sort == "isLoanedOut" && Model.SortDesc ? "fa-sort-down" : "fa-sort")"></i></a>
-                        }
+                        <a class="sort-button" href="#" onclick="sortBy(this, 'object', 'loaned_out', false)">Vandaag verhuurd <i class="fa-solid fa-sort"></i></a>
                     </th>
                     <th class="content__table__head__row__element">
-                        @if (Model.Sort == "inService" && !Model.SortDesc) {
-                            <a class="sort-button" href="?sort=inService&desc=true">In onderhoud <i class="fa-solid fa-sort-down"></i></a>
-                        } else {
-                            <a class="sort-button" href="?sort=inService">In onderhoud <i class="fa-solid @(Model.Sort == "inService" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                        }
+                        <a class="sort-button" href="#" onclick="sortBy(this, 'object', 'in_service', false)">In onderhoud <i class="fa-solid fa-sort"></i></a>
                     </th>
                     <th class="content__table__head__row__element">
-                        @if (Model.Sort == "size" && !Model.SortDesc) {
-                            <a class="sort-button" href="?sort=size&desc=true">Grootte <i class="fa-solid fa-sort-down"></i></a>
-                        } else {
-                            <a class="sort-button" href="?sort=size">Grootte <i class="fa-solid @(Model.Sort == "size" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                        }
+                        <a class="sort-button" href="#" onclick="sortBy(this, 'object', 'size', false)">Grootte <i class="fa-solid fa-sort"></i></a>
                     </th>
                     <th class="content__table__head__row__element">
-                        @if (Model.Sort == "sales" && !Model.SortDesc) {
-                            <a class="sort-button" href="?sort=sales&desc=true">Aanbiedingen <i class="fa-solid fa-sort-down"></i></a>
-                        } else {
-                            <a class="sort-button" href="?sort=sales">Aanbiedingen <i class="fa-solid @(Model.Sort == "sales" && Model.SortDesc ? "fa-sort-up" : "fa-sort")"></i></a>
-                        }
+                        <a class="sort-button" href="#" onclick="sortBy(this, 'object', 'sale', false)">Aanbiedingen <i class="fa-solid fa-sort"></i></a>
                     </th>
                     <th class="content__table__head__row__element">
-                        <a class="sort-button button" href="/objects">Filter leegmaken</a>
+                        <a class="sort-button button" href="#" onclick="sortBy(this, 'object', 'object_number', false)">Filter leegmaken</a>
                     </th>
                 </tr>
                 </thead>

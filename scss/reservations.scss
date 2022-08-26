@@ -1,7 +1,14 @@
+@import "main";
+
 .hide {
   transition: 0.2s ease-out;
   overflow: hidden;
   display: none;
+}
+
+.currency {
+  display: flex;
+  flex-direction: row;
 }
 
 .button {

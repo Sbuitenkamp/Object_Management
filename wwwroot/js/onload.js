@@ -1,6 +1,8 @@
 let data = {};
+let memory = {};
 let rightNow;
 let offset = 0;
+const currencyFormatter = new Intl.NumberFormat(undefined, { style: "currency", currency: "eur" });
 
 window.onload = () => {
     // custom defaultSelected attribute for dropdowns because nothing can ever be easy in html

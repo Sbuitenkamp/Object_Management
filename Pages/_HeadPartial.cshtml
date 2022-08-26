@@ -1,4 +1,6 @@
 @using Microsoft.AspNetCore.Mvc.RazorPages
+@using Object_management.Entity
+@using Object_management.Models
 @* @model Object_management.Pages._HeadPartial *@
 <head>
     <link rel="stylesheet" href="/css/body.css">
@@ -8,6 +10,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@ViewBag.Title</title>
     <script src="/js/onload.js"></script>
+    <script>
+        const sizesEnum = @(EnumHelper.EnumToString<Sizes>()); // enum convert
+        const monthNamesEnum = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; // month names
+    </script>
     <script src="/js/html-formats.js"></script>
     <script src="/js/forms.js"></script>
     <script src="/js/buttons.js"></script>
