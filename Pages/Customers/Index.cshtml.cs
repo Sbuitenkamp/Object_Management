@@ -43,7 +43,7 @@ public class Index : PageModel
     {
         int result = 0;
         string validationMsg = string.Empty;
-        return new JsonResult(new {});
+        FormValidator formValidator = new FormValidator();
 
         switch (formData.QueryType) {
             case "select":
@@ -53,18 +53,15 @@ public class Index : PageModel
                 return new JsonResult(new { customers = res, offset = formData.Offset + res.Count });
             case "edit":
                 if (formData.Customers.Count == 0) return new JsonResult(new { warning = "Customers is empty exception" });
-                // validationMsg = FormValidator.ValidateCustomer(formData.Customers.First());
+                validationMsg = formValidator.ValidateCustomer(formData.Customers.First());
                 if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 
                 result = CustomerRepo.Update(formData.Customers);
-                // return new JsonResult(FormValidator.GenerateResultObject(result));
+                return new JsonResult(formValidator.GenerateResultObject(result, "Customer"));
             case "drop":
                 if (formData.Customers.Count == 0) return new JsonResult(new { warning = "Customers is empty exception" });
-                // validationMsg = FormValidator.ValidateCustomer(formData.Customers.First());
-                if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
-
                 result = CustomerRepo.Delete(formData.Customers[0].id);
-                // return new JsonResult(FormValidator.GenerateResultObject(result));
+                return new JsonResult(formValidator.GenerateResultObject(result, "Customer"));
         }
         return new JsonResult(new { warning = "Querytype is empty exception" });
     }

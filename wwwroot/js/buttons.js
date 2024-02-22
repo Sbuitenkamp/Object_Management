@@ -1,4 +1,4 @@
-function sortBy(button, table, field, descending, subField, upperTable) {
+function sortBy(button, table, field, descending, subField, upperTable, clear) {
     const thead = document.querySelector(`thead.content__table__head`);
     let container;
     data = {
@@ -57,12 +57,14 @@ function sortBy(button, table, field, descending, subField, upperTable) {
             button.setAttribute("onclick", newClick.toString());
         }
     });
-    if (!["id", "object_number"].includes(field)) { // no flip for the reset button
+    if (!clear) { // no flip for the reset button
         // visual indicators
         button.children[0].classList.remove("fa-sort", descending ? "fa-sort-up" : "fa-sort-down");
         button.children[0].classList.add(descending ? "fa-sort-down" : "fa-sort-up");
         // flip the descending parameter TODO fix uppertable param
         button.setAttribute("onclick", `sortBy(this, '${table}', '${field}', ${!descending}, ${subField ? `'${subField}'` : null}, ${upperTable ? `${upperTable}` : null})`);
+        // set the uppertable for the clear button
+        document.querySelector("a#empty-button").setAttribute("onclick", `sortBy(this, '${table}', '${field}', ${!descending}, ${subField ? `'${subField}'` : null}, ${upperTable ? `${upperTable}` : null}, true)`);
     }
 }
 
@@ -142,6 +144,7 @@ function returnReservation(id) {
         Reservations: [ { reservation_number: id, returned: true, paid }]
     };
     post (data, "/Reservations");
+    window.location.reload();
 }
 
 function deleteReservation(id) {

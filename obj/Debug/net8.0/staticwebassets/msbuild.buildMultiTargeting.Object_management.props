@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/Object_management.props" />
+</Project>

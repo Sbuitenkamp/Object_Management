@@ -15,7 +15,7 @@
 <partial name="_MenuPartial"/>
 <div class="content">
     <h1 class="content__title">Geschiedenis van reserveringen</h1>
-    <a class="sort-button button" href="/reservations/old">Filter leegmaken</a>
+    <a id="empty-button" class="sort-button button" href="#" onclick="sortBy(this, 'reservation', 'reservation_number', false, null, null, true)">Filter leegmaken</a>
     @if (Model.ReservationHistory.Count != 0 ) {
         <table class="content__table">
             <thead class="content__table__head">
@@ -78,7 +78,7 @@
             @foreach (Reservation reservation in Model.ReservationHistory) {
                 <form method="post" id="@reservation.reservation_number"></form>
                 <p class="indicator"></p>
-                <tr class="content__table__body__row">
+                <tr class="content__table__body__row @(!reservation.paid ? "warning warning--tr" : "")">
                     <td class="content__table__body__row__element content__table__body__row__element--toggle">
                         <label for="toggle-@reservation.reservation_number"><i class="fa-solid fa-plus pointer"></i></label>
                         <input onclick="toggleHidden(this)" type="checkbox" name="toggle" id="toggle-@reservation.reservation_number" data-toggle="toggle">

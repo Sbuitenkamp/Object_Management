@@ -77,17 +77,21 @@ public class FormValidator
     public object GenerateResultObject(int result, string table)
     {
         object returnData;
+        bool success;
         string resultMessage = string.Empty;
         
         switch (result) {
             case < 0:
                 resultMessage = "Kon gegevens niet bijwerken.";
+                success = false;
                 break;
             case 0:
                 resultMessage = "Er zijn geen gegevens aangepast.";
+                success = false;
                 break;
             default:
                 resultMessage = "Gegevens successvol aangepast.";
+                success = true;
                 break;
         }
 
@@ -97,7 +101,7 @@ public class FormValidator
                 if (result <= 0) return new { warning = resultMessage, body = new { table, data } };
                 return new { success = resultMessage, body = new { table, data } };
             default:
-                return new { };
+                return success ? new { success = resultMessage } : new { warning = resultMessage };
         }
     }
 }

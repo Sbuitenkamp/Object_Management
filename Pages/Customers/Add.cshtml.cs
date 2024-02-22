@@ -26,16 +26,17 @@ public class Add : PageModel
 
     public IActionResult OnPost()
     {
+        FormValidator formValidator = new FormValidator();
+        
         Customer newCustomer = new Customer {
             name = CustomerName,
             email = Email,
             telephone = TelePhone,
             adres = Adres
         };
-        return new JsonResult(new {});
 
-        // string validationMsg = FormValidator.ValidateCustomer(newCustomer);
-        // if (validationMsg != string.Empty) return RedirectToPage(new { warning = validationMsg });
+        string validationMsg = formValidator.ValidateCustomer(newCustomer);
+        if (validationMsg != string.Empty) return RedirectToPage(new { warning = validationMsg });
         
         int newCustomerId = CustomerRepo.Create(newCustomer);
         if (ReturnPage != null) return RedirectToPage("/" + ReturnPage, new { newCustomerId });

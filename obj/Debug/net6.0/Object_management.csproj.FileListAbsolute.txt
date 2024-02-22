@@ -77,7 +77,6 @@
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/Object_management.deps.json
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/Object_management.runtimeconfig.json
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/Object_management.dll
-/home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/ref/Object_management.dll
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/Object_management.pdb
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/BouncyCastle.Crypto.dll
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/Dapper.dll
@@ -119,3 +118,11 @@
 /home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/Object_management.genruntimeconfig.cache
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/libman.json
 /home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/Newtonsoft.Json.dll
+/home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/Object_management.sourcelink.json
+/home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/staticwebassets/msbuild.Object_management.Microsoft.AspNetCore.StaticWebAssets.props
+/home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/staticwebassets/msbuild.build.Object_management.props
+/home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/staticwebassets/msbuild.buildMultiTargeting.Object_management.props
+/home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/staticwebassets/msbuild.buildTransitive.Object_management.props
+/home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/staticwebassets.pack.json
+/home/sbuitenkamp/Business/Object_Management/obj/Debug/net6.0/refint/Object_management.dll
+/home/sbuitenkamp/Business/Object_Management/bin/Debug/net6.0/global.json

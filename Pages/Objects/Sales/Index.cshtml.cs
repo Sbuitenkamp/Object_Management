@@ -20,24 +20,21 @@ public class Index : PageModel
 
     public JsonResult OnPost([FromBody] Form formData)
     {
-        if (formData.Sales.Count == 0) return new JsonResult(new { warning = "Customers is empty exception" });
+        if (formData.Sales.Count == 0) return new JsonResult(new { warning = "Sales is empty exception" });
         int result = 0;
         string validationMsg = string.Empty;
-        return new JsonResult(new {});
+        FormValidator formValidator = new FormValidator();
 
         switch (formData.QueryType) {
             case "edit":
-                // validationMsg = FormValidator.ValidateSale(formData.Sales.First());
+                validationMsg = formValidator.ValidateSale(formData.Sales.First());
                 if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
                 
                 result = SaleRepo.UpdateSales(formData.Sales);
-                // return new JsonResult(FormValidator.GenerateResultObject(result));
+                return new JsonResult(formValidator.GenerateResultObject(result, "Sale"));
             case "drop":
-                // validationMsg = FormValidator.ValidateSale(formData.Sales.First());
-                if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
-                
                 result = SaleRepo.DeleteSale(formData.Sales.First());
-                // return new JsonResult(FormValidator.GenerateResultObject(result));
+                return new JsonResult(formValidator.GenerateResultObject(result, "Sale"));
         }
         return new JsonResult(new { warning = "Querytype is empty exception" });
     }

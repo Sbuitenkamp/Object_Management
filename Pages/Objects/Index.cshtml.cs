@@ -57,13 +57,10 @@ public class Index : PageModel
                     if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
 
                     result = ObjectRepo.UpdateObjectType(formData.ObjectTypes);
-                    return new JsonResult(Validator.GenerateResultObject(result, "Objects"));
+                    return new JsonResult(Validator.GenerateResultObject(result, "ObjectType"));
                 case "drop":
-                    validationMsg = Validator.ValidateObjectType(formData.ObjectTypes.First());
-                    if (validationMsg != string.Empty) return new JsonResult(new { warning = validationMsg });
-                    
                     result = ObjectRepo.DeleteObjectType(formData.ObjectTypes[0].id);
-                    return new JsonResult(Validator.GenerateResultObject(result, "Objects"));
+                    return new JsonResult(Validator.GenerateResultObject(result, "ObjectType"));
             }
 
             return new JsonResult(new { warning = "Querytype is empty exception" });

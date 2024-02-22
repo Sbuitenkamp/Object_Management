@@ -16,7 +16,7 @@
 <partial name="_MenuPartial"/>
 <div class="content">
     <h1 class="content__title">Uitgegeven reserveringen</h1>
-    <a class="sort-button button" href="/reservations">Filter leegmaken</a>
+    <a id="empty-button" class="sort-button button" href="#" onclick="sortBy(this, 'reservation', 'reservation_number', false, null, null, true)">Filter leegmaken</a>
     @if (Model.GivenOutReservations.Count != 0 ) {
         <table id="table-upper" class="content__table">
             <thead class="content__table__head">
@@ -160,9 +160,6 @@
             <thead class="content__table__head">
             <tr class="content__table__head__row">
                 <th class="content__table__head__row__element content__table__head__row__element--toggle"></th>
-                <th class="content__table__head__row__element">
-                    <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'reservation_number', false)">Reserveringsnummer <i class="fa-solid fa-sort"></i></a>
-                </th>
                 <th class="content__table__head__row__element">
                     <a class="sort-button" href="#" onclick="sortBy(this, 'reservation', 'reservation_number', false)">Reserveringsnummer <i class="fa-solid fa-sort"></i></a>
                 </th>

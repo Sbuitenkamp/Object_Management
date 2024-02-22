@@ -12,7 +12,6 @@ function onClickGiveOut(resId) {
         const value = { object_number: parseInt(input.name) };
         data.Reservations[0].Objects.push(value);
     });
-    console.log(data)
     post(data, window.location.href, "/reservations");
 }
 
@@ -97,8 +96,6 @@ function parseForms(table, noNeedForChange, container) {
             if (/object(?![_*-])([A-z])/g.test(field.name)) { // test for fields that start with lowercase object and then precede with an attached word without any symbols in between (for reservation sort)
                 const newName = field.name.replace("object", "");
                 const id = field.id.replace(newName, "obj");
-                console.log(newName)
-                console.log(id)
                 if (!data[table][counter].Objects) data[table][counter].Objects = [];
                 if (!data[table][counter].Objects[id]) data[table][counter].Objects[id] = {};
                 data[table][counter].Objects[id][newName] = value;

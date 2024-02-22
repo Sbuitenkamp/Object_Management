@@ -25,8 +25,7 @@ public class AddType : PageModel
 
         int rowCount = ObjectRepo.CreateObjectType(objectTypeToInsert);
         
-        // TODO FIX
-        // if (rowCount == 0) ViewData["warning"] = "Er bestaat al een fietssoort met die beschrijving.";
-        // else ViewData["confirmation"] = "Fietssoort toegevoegd.";
+        if (rowCount == 0) ViewData["warning"] = "Er bestaat al een fietssoort met die beschrijving.";
+        else ViewData["confirmation"] = "Fietssoort toegevoegd.";
     }
 }

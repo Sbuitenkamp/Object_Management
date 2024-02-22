@@ -12,12 +12,12 @@
 <partial name="_HeadPartial"/>
 <body>
 <partial name="_MenuPartial"/>
-@if (Model.ReturnPage != null) {
-    <a href="/@Model.ReturnPage" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug</a>
-} else {
-    <a href="/customers" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug naar klant overzicht</a>
-}
 <div class="content">
+    @if (Model.ReturnPage != null) {
+        <a href="/@Model.ReturnPage" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug</a>
+    } else {
+        <a href="/customers" class="breadcrumb"><i class="fa fa-solid fa-arrow-left-long"></i> Terug naar klant overzicht</a>
+    }
     @if (Model.Warning != string.Empty) {
         <h1 class="warning">@Model.Warning</h1>
     }

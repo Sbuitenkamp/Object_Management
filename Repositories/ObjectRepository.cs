@@ -202,7 +202,9 @@ public class ObjectRepository : Repository
         int rowCount = 0;
 
         try {
+            // todo check if no typed objects exist and if none are reserved
             Connect();
+            rowCount += Connection.Execute("DELETE FROM is_applied_to WHERE object_type_id = @id", new { id });
             rowCount += Connection.Execute("DELETE FROM ObjectType WHERE id=@id", new { id });
         } catch (Exception e) {
             rowCount = -1;
